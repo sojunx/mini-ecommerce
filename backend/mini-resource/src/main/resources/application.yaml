@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username:
+    password:
+    url: jdbc:h2:mem:ecommerce_db
+
+  jpa:
+    hibernate.ddl-auto: update
+    show-sql: true
+
+  h2.console.enabled: true
+  jackson.property-naming-strategy: SNAKE_CASE
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:8080/issuer
+#        opaquetoken:
+#          introspection-uri: http://localhost:8080/oauth2/introspect
+#          client-id: client-id
+#          client-secret: client-secret
