@@ -16,13 +16,21 @@ public class TokenService {
     private final TokenRepository repo;
     private final JwtService jwtService;
 
-    public void revoke(String token) {
+    public Token revoke(String token) {
         var result = repo.findByToken(token);
-        if (result.isEmpty()) return;
+        if (result.isEmpty()) return null;
 
         var refreshToken = result.get();
         refreshToken.setRevoked(true);
-        repo.save(refreshToken);
+        return repo.save(refreshToken);
+    }
+
+    public Token findByToken(String token) {
+        var result = repo.findByToken(token);
+        if (result.isEmpty())
+            throw new RuntimeException("Token not found");
+
+        return result.get();
     }
 
     public void save(User user, String token) {

@@ -1,5 +1,6 @@
 package dev.sojunx.ecommerce.authorize.api.config;
 
+import dev.sojunx.ecommerce.authorize.api.model.User;
 import dev.sojunx.ecommerce.authorize.api.service.CookieService;
 import dev.sojunx.ecommerce.authorize.api.service.CustomUserDetailsService;
 import dev.sojunx.ecommerce.authorize.api.service.JwtService;
@@ -63,11 +64,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void authenticate(HttpServletRequest req, String token, String refreshToken, String email) {
-        var userDetails = userDetailsService.loadUserByUsername(email);
+        var user = (User) userDetailsService.loadUserByUsername(email);
         boolean isTokenValid = tokenService.validate(refreshToken);
 
-        if (jwtService.isTokenValid(token, userDetails) && isTokenValid) {
-            var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        if (jwtService.isTokenValid(token, user) && isTokenValid) {
+            var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
             SecurityContextHolder.getContext().setAuthentication(authToken);
