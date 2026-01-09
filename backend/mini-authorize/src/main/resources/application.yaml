@@ -18,28 +18,3 @@ application:
       secret-key: 3120f70d17d8391ff5455ab729a3b63683b5f5e9d24536307b0e1b0ae90097dbb3ecb82479118344855fc36f46ccbba64a094fd24a1d584324184c5f83185272
       access-token.expiration: 86400000 # 1 day
       refresh-token.expiration: 604800000 # 7 days
-
-#  security:
-#    user:
-#      name: user
-#      password: password
-#    oauth2:
-#      authorizationserver:
-#        client:
-#          my-client:
-#            registration:
-#              client-id: "client-id"
-#              client-secret: "client-secret"
-#              client-authentication-methods:
-#                - "client_secret_basic"
-#              authorization-grant-types:
-#                - "authorization_code"
-#                - "refresh_token"
-#              redirect-uris:
-#                - "http://127.0.0.1:8081/login/oauth2/code/oidc-client"
-#              post-logout-redirect-uris:
-#                - "http://127.0.0.1:8081/"
-#              scopes:
-#                - "openid"
-#                - "profile"
-#            require-authorization-consent: true

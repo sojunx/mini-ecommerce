@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.authorize.api.dto;
+package dev.sojunx.ecommerce.authorize.api.dto.response;
 
 import dev.sojunx.ecommerce.authorize.api.model.UserRole;
 
