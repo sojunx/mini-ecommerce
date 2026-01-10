@@ -38,6 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(reg -> reg
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
         );
 
