@@ -1,8 +1,9 @@
-package dev.sojunx.ecommerce.authorize.api.service;
+package dev.sojunx.ecommerce.authorize.api.service.core;
 
-import dev.sojunx.ecommerce.authorize.api.model.Token;
-import dev.sojunx.ecommerce.authorize.api.model.User;
+import dev.sojunx.ecommerce.authorize.api.domain.entities.Token;
+import dev.sojunx.ecommerce.authorize.api.domain.entities.User;
 import dev.sojunx.ecommerce.authorize.api.repository.TokenRepository;
+import dev.sojunx.ecommerce.authorize.api.service.auth.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

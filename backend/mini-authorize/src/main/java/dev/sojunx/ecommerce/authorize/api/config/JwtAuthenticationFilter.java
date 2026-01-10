@@ -1,10 +1,10 @@
 package dev.sojunx.ecommerce.authorize.api.config;
 
-import dev.sojunx.ecommerce.authorize.api.model.User;
-import dev.sojunx.ecommerce.authorize.api.service.CookieService;
-import dev.sojunx.ecommerce.authorize.api.service.CustomUserDetailsService;
-import dev.sojunx.ecommerce.authorize.api.service.JwtService;
-import dev.sojunx.ecommerce.authorize.api.service.TokenService;
+import dev.sojunx.ecommerce.authorize.api.domain.entities.User;
+import dev.sojunx.ecommerce.authorize.api.service.auth.CookieService;
+import dev.sojunx.ecommerce.authorize.api.service.auth.CustomUserDetailsService;
+import dev.sojunx.ecommerce.authorize.api.service.auth.JwtService;
+import dev.sojunx.ecommerce.authorize.api.service.core.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

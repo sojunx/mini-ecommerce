@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.authorize.api.model;
+package dev.sojunx.ecommerce.authorize.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

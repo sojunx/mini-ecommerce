@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.authorize.api.service;
+package dev.sojunx.ecommerce.authorize.api.service.auth;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

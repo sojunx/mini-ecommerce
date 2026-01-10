@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.authorize.api.repository;
 
-import dev.sojunx.ecommerce.authorize.api.model.Token;
-import dev.sojunx.ecommerce.authorize.api.model.User;
+import dev.sojunx.ecommerce.authorize.api.domain.entities.Token;
+import dev.sojunx.ecommerce.authorize.api.domain.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,6 @@
-package dev.sojunx.ecommerce.authorize.api.model;
+package dev.sojunx.ecommerce.authorize.api.domain.entities;
 
+import dev.sojunx.ecommerce.authorize.api.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;

@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.authorize.api.service;
+package dev.sojunx.ecommerce.authorize.api.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

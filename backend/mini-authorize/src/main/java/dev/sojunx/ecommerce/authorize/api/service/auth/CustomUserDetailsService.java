@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.authorize.api.service;
+package dev.sojunx.ecommerce.authorize.api.service.auth;
 
 import dev.sojunx.ecommerce.authorize.api.repository.UserRepository;
 import lombok.NonNull;

@@ -1,9 +1,9 @@
-package dev.sojunx.ecommerce.authorize.api.service;
+package dev.sojunx.ecommerce.authorize.api.service.core;
 
+import dev.sojunx.ecommerce.authorize.api.domain.entities.User;
+import dev.sojunx.ecommerce.authorize.api.domain.enums.UserRole;
 import dev.sojunx.ecommerce.authorize.api.dto.request.SignUpRequest;
 import dev.sojunx.ecommerce.authorize.api.dto.response.UserResponse;
-import dev.sojunx.ecommerce.authorize.api.model.User;
-import dev.sojunx.ecommerce.authorize.api.model.UserRole;
 import dev.sojunx.ecommerce.authorize.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
