@@ -4,6 +4,7 @@ import dev.sojunx.ecommerce.api.domain.entities.User;
 import dev.sojunx.ecommerce.api.domain.enums.UserRole;
 import dev.sojunx.ecommerce.api.dto.request.SignUpRequest;
 import dev.sojunx.ecommerce.api.dto.response.UserResponse;
+import dev.sojunx.ecommerce.api.mapper.UserMapper;
 import dev.sojunx.ecommerce.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,15 +16,15 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository repo;
     private final PasswordEncoder encoder;
+    private final UserMapper mapper;
 
-    public UserResponse createUser(SignUpRequest request) {
+    public void createUser(SignUpRequest request) {
         var user = new User();
         user.setEmail(request.email());
         user.setPassword(encoder.encode(request.password()));
         user.setRole(UserRole.USER);
 
-        var savedUser = repo.save(user);
-        return new UserResponse(savedUser.getEmail(), savedUser.getFirstName(), savedUser.getLastName(), savedUser.getRole());
+        repo.save(user);
     }
 
     public UserResponse getUserByEmail(String email) {

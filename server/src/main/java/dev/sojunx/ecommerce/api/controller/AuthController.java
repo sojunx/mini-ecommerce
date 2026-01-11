@@ -4,7 +4,9 @@ import dev.sojunx.ecommerce.api.domain.entities.User;
 import dev.sojunx.ecommerce.api.dto.request.SignInRequest;
 import dev.sojunx.ecommerce.api.dto.request.SignUpRequest;
 import dev.sojunx.ecommerce.api.dto.response.ApiResponse;
+import dev.sojunx.ecommerce.api.dto.response.SignInResponse;
 import dev.sojunx.ecommerce.api.dto.response.TokenResponse;
+import dev.sojunx.ecommerce.api.mapper.UserMapper;
 import dev.sojunx.ecommerce.api.service.auth.CookieService;
 import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
 import dev.sojunx.ecommerce.api.service.auth.JwtService;
@@ -33,6 +35,7 @@ public class AuthController {
     private final UserService userService;
     private final TokenService tokenService;
     private final CookieService cookieService;
+    private final UserMapper mapper;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
@@ -81,23 +84,22 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
-        var user = userService.createUser(request);
+        userService.createUser(request);
 
-        var res = ApiResponse.success("Signed up successfully", user);
+        var res = ApiResponse.success("Signed up successfully");
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-in")
     ResponseEntity<?> signin(@RequestBody SignInRequest request, HttpServletResponse response) {
         // Authenticate user
-        var token = new UsernamePasswordAuthenticationToken(request.email(), request.password());
-        authenticationManager.authenticate(token);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         // Get user details
         var user = (User) userDetailsService.loadUserByUsername(request.email());
 
         // Generate tokens
-        var accessToken = jwtService.generateToken(user);
+        var token = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         // Revoke all tokens and save new token
@@ -109,7 +111,7 @@ public class AuthController {
         // Set cookie for refresh token
         cookieService.setCookie(response, "refresh_token", refreshToken, refreshExpiration);
 
-        var res = ApiResponse.success("Signed in successfully", new TokenResponse(accessToken));
+        var res = ApiResponse.success("Signed in successfully", new SignInResponse(token, mapper.toDto(user)));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
