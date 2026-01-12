@@ -8,7 +8,14 @@ spring:
   jpa:
     hibernate.ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true # This run after the datasource is initialized
 
+  # Required
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+  
   h2.console.enabled: true
   jackson.property-naming-strategy: SNAKE_CASE
 

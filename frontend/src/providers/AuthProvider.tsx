@@ -3,7 +3,7 @@
 import Loading from "@/components/loading";
 import { AuthContext } from "@/hooks/useAuth";
 import { http } from "@/lib/http";
-import type { User } from "@/lib/types";
+import type { SignInCommand, User } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -14,10 +14,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const init = async () => {
-      const token = sessionStorage.getItem("token");
+      const access_token = sessionStorage.getItem("access_token");
 
       try {
-        if (!token) await refresh();
+        if (!access_token) await refresh();
 
         await getCurrentUser();
       } catch (error: any) {
@@ -36,7 +36,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await http.post("/api/auth/refresh");
 
       const data = res.data?.data;
-      if (data?.token) sessionStorage.setItem("token", data.token);
+      if (data?.access_token)
+        sessionStorage.setItem("access_token", data.access_token);
     } catch (error: any) {
       console.log(error.response);
     } finally {
@@ -58,13 +59,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (command: SignInCommand) => {
     try {
       setLoading(true);
-      const res = await http.post("/api/auth/sign-in", { email, password });
+      const res = await http.post("/api/auth/sign-in", command);
 
       const { data, message } = res.data;
-      if (data?.token) sessionStorage.setItem("token", data.token);
+      if (data?.access_token)
+        sessionStorage.setItem("access_token", data.access_token);
 
       window.location.reload();
 
@@ -84,7 +86,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!success) return;
 
-      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("access_token");
       window.location.reload();
 
       toast.success(message || "Signed out successfully");

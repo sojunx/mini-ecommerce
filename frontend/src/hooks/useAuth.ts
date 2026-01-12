@@ -1,10 +1,10 @@
-import type { User } from "@/lib/types";
+import type { SignInCommand, User } from "@/lib/types";
 import { createContext, useContext } from "react";
 
 interface AuthContextProps {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (command: SignInCommand) => Promise<void>;
   signOut: () => Promise<void>;
 }
 

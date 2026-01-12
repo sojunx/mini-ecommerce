@@ -23,7 +23,9 @@ const Navbar = () => {
 
       <div className="flex gap-2 items-center">
         <Button variant="ghost">Home</Button>
-        <Button variant="ghost">Products</Button>
+        <Button variant="ghost" asChild>
+          <Link to="/products">Products</Link>
+        </Button>
         <Button
           variant="ghost"
           onClick={() => console.log(sessionStorage.getItem("token"))}
@@ -72,7 +74,7 @@ const Navbar = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={signOut}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
                 </DropdownMenuItem>
@@ -85,7 +87,9 @@ const Navbar = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => signIn("test.user@mail.com", "password")}
+            onClick={() =>
+              signIn({ email: "test.user@mail.com", password: "password" })
+            }
           >
             Sign In
           </Button>
