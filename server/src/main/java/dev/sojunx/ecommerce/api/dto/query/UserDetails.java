@@ -1,6 +1,5 @@
-package dev.sojunx.ecommerce.api.dto;
+package dev.sojunx.ecommerce.api.dto.query;
 
-import dev.sojunx.ecommerce.api.domain.enums.UserRole;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,10 +7,11 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class UserDto {
+public class UserDetails {
     private UUID id;
     private String email;
     private String firstName;
     private String lastName;
-    private UserRole role;
+    private String phoneNumber;
+    private String avatarUrl;
 }

@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.api.config;
 
-import dev.sojunx.ecommerce.api.dto.response.ApiError;
-import dev.sojunx.ecommerce.api.dto.response.ApiResponse;
+import dev.sojunx.ecommerce.api.dto.helper.ApiError;
+import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         var error = new ApiError(HttpStatus.UNAUTHORIZED.name(), ex.getMessage());
         var data = ApiResponse.error("Please sign in before using this resource", error);
-        
+
         var out = res.getOutputStream();
         mapper.writeValue(out, data);
         out.flush();

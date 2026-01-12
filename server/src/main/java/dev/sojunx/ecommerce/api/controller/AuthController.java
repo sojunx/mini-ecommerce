@@ -1,16 +1,13 @@
 package dev.sojunx.ecommerce.api.controller;
 
-import dev.sojunx.ecommerce.api.domain.entities.User;
-import dev.sojunx.ecommerce.api.dto.request.SignInRequest;
-import dev.sojunx.ecommerce.api.dto.request.SignUpRequest;
-import dev.sojunx.ecommerce.api.dto.response.ApiResponse;
-import dev.sojunx.ecommerce.api.dto.response.SignInResponse;
-import dev.sojunx.ecommerce.api.dto.response.TokenResponse;
-import dev.sojunx.ecommerce.api.mapper.UserMapper;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
+import dev.sojunx.ecommerce.api.dto.command.SignInCommand;
+import dev.sojunx.ecommerce.api.dto.command.SignUpCommand;
+import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
 import dev.sojunx.ecommerce.api.service.auth.CookieService;
 import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
 import dev.sojunx.ecommerce.api.service.auth.JwtService;
-import dev.sojunx.ecommerce.api.service.core.TokenService;
+import dev.sojunx.ecommerce.api.service.auth.RefreshTokenService;
 import dev.sojunx.ecommerce.api.service.core.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,30 +22,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager manager;
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
     private final UserService userService;
-    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final CookieService cookieService;
-    private final UserMapper mapper;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
     @PostMapping("/refresh")
-    ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+    ResponseEntity<?> refresh(HttpServletRequest req, HttpServletResponse res) {
         // Extract refresh token from cookie
-        var cookie = cookieService.extractCookie(request, "refresh_token");
+        var cookie = cookieService.extractCookie(req, "refresh_token");
         if (cookie.isEmpty())
             throw new RuntimeException("Cookie not found");
 
         // Revoke old token
-        var token = tokenService.revoke(cookie.get().getValue());
+        var token = refreshTokenService.revoke(cookie.get().getValue());
         if (token == null)
             throw new RuntimeException("Token not found");
 
@@ -56,47 +54,48 @@ public class AuthController {
         var user = token.getUser();
 
         // Generate new token
-        var accessToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        var access = jwtService.generateToken(user);
+        var refresh = jwtService.generateRefreshToken(user);
 
         // Save new token
-        tokenService.save(user, refreshToken);
+        refreshTokenService.save(user, refresh);
 
         // Set cookie for refresh token
-        cookieService.setCookie(response, "refresh_token", refreshToken, refreshExpiration);
+        cookieService.setCookie(res, "refresh_token", refresh, refreshExpiration);
 
-        var res = ApiResponse.success("Refreshed token successfully", new TokenResponse(accessToken));
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        "Signed out successfully",
+                        Map.of("access_token", access)
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/sign-out")
-    ResponseEntity<?> signout(HttpServletRequest request, HttpServletResponse response) {
+    ResponseEntity<?> signout(HttpServletRequest req, HttpServletResponse res) {
         // Revoke refresh token
-        var cookie = cookieService.extractCookie(request, "refresh_token");
-        cookie.ifPresent(value -> tokenService.revoke(value.getValue()));
+        var cookie = cookieService.extractCookie(req, "refresh_token");
+        cookie.ifPresent(value -> refreshTokenService.revoke(value.getValue()));
 
         // Clear cookie
-        cookieService.clearCookie(response, "refresh_token");
+        cookieService.clearCookie(res, "refresh_token");
 
-        var res = ApiResponse.success("Signed out successfully");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.success("Signed out successfully"), HttpStatus.OK);
     }
 
     @PostMapping("/sign-up")
-    ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
-        userService.createUser(request);
+    ResponseEntity<?> signup(@RequestBody SignUpCommand command) {
+        userService.save(command);
 
-        var res = ApiResponse.success("Signed up successfully");
-        return new ResponseEntity<>(res, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Signed up successfully"), HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-in")
-    ResponseEntity<?> signin(@RequestBody SignInRequest request, HttpServletResponse response) {
+    ResponseEntity<?> signin(@RequestBody SignInCommand command, HttpServletResponse res) {
         // Authenticate user
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-
-        // Get user details
-        var user = (User) userDetailsService.loadUserByUsername(request.email());
+        manager.authenticate(new UsernamePasswordAuthenticationToken(command.email(), command.password()));
+        var user = (User) userDetailsService.loadUserByUsername(command.email());
 
         // Generate tokens
         var token = jwtService.generateToken(user);
@@ -105,13 +104,18 @@ public class AuthController {
         // Revoke all tokens and save new token
         // NOTES: This is not a good practice, but for demo purpose only
         // Maybe revoke one token, not all tokens
-        tokenService.revokeAll(user);
-        tokenService.save(user, refreshToken);
+        refreshTokenService.revokeAll(user);
+        refreshTokenService.save(user, refreshToken);
 
         // Set cookie for refresh token
-        cookieService.setCookie(response, "refresh_token", refreshToken, refreshExpiration);
+        cookieService.setCookie(res, "refresh_token", refreshToken, refreshExpiration);
 
-        var res = ApiResponse.success("Signed in successfully", new TokenResponse(token));
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        "Signed in successfully",
+                        Map.of("access_token", token)
+                ),
+                HttpStatus.OK
+        );
     }
 }

@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.api.config;
 
-import dev.sojunx.ecommerce.api.dto.response.ApiError;
-import dev.sojunx.ecommerce.api.dto.response.ApiResponse;
+import dev.sojunx.ecommerce.api.dto.helper.ApiError;
+import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

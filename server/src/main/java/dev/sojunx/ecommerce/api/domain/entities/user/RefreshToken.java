@@ -1,30 +1,31 @@
-package dev.sojunx.ecommerce.api.domain.entities;
+package dev.sojunx.ecommerce.api.domain.entities.user;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tokens")
-@Getter
-public class Token {
+@Table(name = "refresh_tokens")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(nullable = false, unique = true)
     private String token;
 
-    @Setter
     @Column(nullable = false)
     private boolean revoked;
 
-    @Setter
     @Column(nullable = false)
     private boolean expired;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

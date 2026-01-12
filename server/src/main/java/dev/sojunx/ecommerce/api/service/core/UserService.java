@@ -1,38 +1,48 @@
 package dev.sojunx.ecommerce.api.service.core;
 
-import dev.sojunx.ecommerce.api.domain.entities.User;
-import dev.sojunx.ecommerce.api.domain.enums.UserRole;
-import dev.sojunx.ecommerce.api.dto.request.SignUpRequest;
-import dev.sojunx.ecommerce.api.dto.response.UserResponse;
+import dev.sojunx.ecommerce.api.dto.command.SignUpCommand;
+import dev.sojunx.ecommerce.api.dto.query.UserDetails;
 import dev.sojunx.ecommerce.api.mapper.UserMapper;
 import dev.sojunx.ecommerce.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository repo;
-    private final PasswordEncoder encoder;
     private final UserMapper mapper;
 
-    public void createUser(SignUpRequest request) {
-        var user = new User();
-        user.setEmail(request.email());
-        user.setPassword(encoder.encode(request.password()));
-        user.setRole(UserRole.USER);
+    public void save(SignUpCommand command) {
+        // Validate password - confirm password
 
-        repo.save(user);
+        // Save user
+        repo.save(mapper.toEntity(command));
     }
 
-    public UserResponse getUserByEmail(String email) {
+    public UserDetails findById(UUID id) {
+        var result = repo.findById(id);
+        if (result.isEmpty())
+            throw new UsernameNotFoundException("User not found with id: " + id);
+
+        return mapper.toDto(result.get());
+    }
+
+    public UserDetails findByEmail(String email) {
         var result = repo.findByEmail(email);
         if (result.isEmpty())
             throw new UsernameNotFoundException("User not found with email: " + email);
 
-        var user = result.get();
-        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole());
+        return mapper.toDto(result.get());
+    }
+
+    public List<UserDetails> findAll() {
+        return repo.findAll().stream().map(mapper::toDto).toList();
     }
 }

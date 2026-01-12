@@ -1,21 +1,26 @@
-package dev.sojunx.ecommerce.api.domain.entities;
+package dev.sojunx.ecommerce.api.domain.entities.product;
 
 import dev.sojunx.ecommerce.api.domain.enums.ProductCategory;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "products")
-@Getter
+@Data
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductVariant> variants = new ArrayList<>();
 
     @Column(nullable = false)
     private String name;
@@ -24,19 +29,19 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private double price;
+    private double basePrice;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductCategory category;
 
-    // TODO: Create warehouse to handle this, just simple
-    private int stock;
+    private String imageUrl;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }

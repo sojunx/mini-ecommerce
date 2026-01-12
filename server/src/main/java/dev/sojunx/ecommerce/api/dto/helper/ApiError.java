@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.dto.response;
+package dev.sojunx.ecommerce.api.dto.helper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

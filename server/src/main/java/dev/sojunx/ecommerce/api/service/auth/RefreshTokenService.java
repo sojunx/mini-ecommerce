@@ -1,23 +1,24 @@
-package dev.sojunx.ecommerce.api.service.core;
+package dev.sojunx.ecommerce.api.service.auth;
 
-import dev.sojunx.ecommerce.api.domain.entities.Token;
-import dev.sojunx.ecommerce.api.domain.entities.User;
-import dev.sojunx.ecommerce.api.repository.TokenRepository;
-import dev.sojunx.ecommerce.api.service.auth.JwtService;
-import jakarta.transaction.Transactional;
+import dev.sojunx.ecommerce.api.domain.entities.user.RefreshToken;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
+import dev.sojunx.ecommerce.api.mapper.RefreshTokenMapper;
+import dev.sojunx.ecommerce.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class TokenService {
-    private final TokenRepository repo;
+public class RefreshTokenService {
+    private final RefreshTokenRepository repo;
     private final JwtService jwtService;
+    private final RefreshTokenMapper mapper;
 
-    public Token revoke(String token) {
+    public RefreshToken revoke(String token) {
         var result = repo.findByToken(token);
         if (result.isEmpty()) return null;
 
@@ -26,7 +27,7 @@ public class TokenService {
         return repo.save(refreshToken);
     }
 
-    public Token findByToken(String token) {
+    public RefreshToken findByToken(String token) {
         var result = repo.findByToken(token);
         if (result.isEmpty())
             throw new RuntimeException("Token not found");
@@ -35,13 +36,7 @@ public class TokenService {
     }
 
     public void save(User user, String token) {
-        var refreshToken = new Token();
-        refreshToken.setToken(token);
-        refreshToken.setRevoked(false);
-        refreshToken.setExpired(false);
-        refreshToken.setUser(user);
-
-        repo.save(refreshToken);
+        repo.save(mapper.toEntity(user, token));
     }
 
     public void revokeAll(User user) {

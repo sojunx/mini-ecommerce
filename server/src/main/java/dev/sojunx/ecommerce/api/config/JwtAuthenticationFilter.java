@@ -1,10 +1,10 @@
 package dev.sojunx.ecommerce.api.config;
 
-import dev.sojunx.ecommerce.api.domain.entities.User;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
 import dev.sojunx.ecommerce.api.service.auth.CookieService;
 import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
 import dev.sojunx.ecommerce.api.service.auth.JwtService;
-import dev.sojunx.ecommerce.api.service.core.TokenService;
+import dev.sojunx.ecommerce.api.service.auth.RefreshTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -28,7 +28,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
-    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final CookieService cookieService;
 
     @Override
@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void authenticate(HttpServletRequest req, String token, String refreshToken, String email) {
         var user = (User) userDetailsService.loadUserByUsername(email);
-        boolean isTokenValid = tokenService.validate(refreshToken);
+        boolean isTokenValid = refreshTokenService.validate(refreshToken);
 
         if (jwtService.isTokenValid(token, user) && isTokenValid) {
             var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

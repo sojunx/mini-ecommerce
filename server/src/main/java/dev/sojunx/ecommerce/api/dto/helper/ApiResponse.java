@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.dto.response;
+package dev.sojunx.ecommerce.api.dto.helper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
