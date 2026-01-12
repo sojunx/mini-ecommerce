@@ -4,16 +4,15 @@ import { createContext, useContext } from "react";
 interface AuthContextProps {
   user: User | null;
   loading: boolean;
-  signIn: () => Promise<{
-    success: boolean;
-  }>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
 
-  return context;
+  return ctx;
 };

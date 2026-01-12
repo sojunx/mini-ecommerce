@@ -33,6 +33,6 @@ public class UserService {
             throw new UsernameNotFoundException("User not found with email: " + email);
 
         var user = result.get();
-        return new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole());
+        return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole());
     }
 }

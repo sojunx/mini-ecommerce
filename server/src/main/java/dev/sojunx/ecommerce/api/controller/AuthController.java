@@ -111,7 +111,7 @@ public class AuthController {
         // Set cookie for refresh token
         cookieService.setCookie(response, "refresh_token", refreshToken, refreshExpiration);
 
-        var res = ApiResponse.success("Signed in successfully", new SignInResponse(token, mapper.toDto(user)));
+        var res = ApiResponse.success("Signed in successfully", new TokenResponse(token));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

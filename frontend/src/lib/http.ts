@@ -5,20 +5,13 @@ export const http = axios.create({
   withCredentials: true,
 });
 
-// let accessToken = "";
+// Add a request interceptor to include the auth token in headers
+http.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
 
-// http.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (error.response.status === 401) {
-//       // 1. Try to refresh
-//       const res = await axios.post("http://localhost:8080/api/auth/refresh");
-//       accessToken = res.data.access_token;
-
-//       // 2. Retry original request with new token
-//       error.config.headers["Authorization"] = `Bearer ${accessToken}`;
-//       return http(error.config);
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
