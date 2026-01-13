@@ -22,7 +22,9 @@ const Navbar = () => {
       </div>
 
       <div className="flex gap-2 items-center">
-        <Button variant="ghost">Home</Button>
+        <Button variant="ghost" asChild>
+          <Link to="/">Home</Link>
+        </Button>
         <Button variant="ghost" asChild>
           <Link to="/products">Products</Link>
         </Button>

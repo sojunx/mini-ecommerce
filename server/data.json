@@ -1,0 +1,20 @@
+[
+  {
+    "_comment": "GET /api/cart",
+    "_example": "(19.99, 'CLOTHING', 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab', NOW(), NOW()),",
+    "_ex2": "(@prod1, 'TWS-S-WHT', 'S', 'White', 19.99, 50, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab'),",
+    "return": {
+      "success": true,
+      "message": "Fetched cart successfully",
+      "data": {
+        "cart_items": [
+          {
+            "sku": "TWS-S-WHT",
+            "name": "Classic White T-Shirt",
+            "variant_price": 19.99
+          }
+        ]
+      }
+    }
+  }
+]

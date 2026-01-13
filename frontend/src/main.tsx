@@ -1,3 +1,4 @@
+import RootLayout from "@/components/layouts/root-layout";
 import AuthProvider from "@/providers/AuthProvider";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -11,7 +12,9 @@ createRoot(document.getElementById("root")!).render(
     <Toaster />
     <AuthProvider>
       <Routes>
-        <Route path="/*" element={<App />} />
+        <Route element={<RootLayout />}>
+          <Route path="/*" element={<App />} />
+        </Route>
       </Routes>
     </AuthProvider>
   </BrowserRouter>
