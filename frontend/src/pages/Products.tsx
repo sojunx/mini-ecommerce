@@ -4,68 +4,79 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { mockProducts } from "@/lib/data";
-import { SearchIcon } from "lucide-react";
-import { useState } from "react";
-
-interface Product {
-  id: string;
-  name: string;
-  image_url: string;
-  base_price: number;
-}
+import { http } from "@/lib/http";
+import type { Product } from "@/lib/types";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const Products = () => {
-  const data = mockProducts.data.products;
-  const [products, setProducts] = useState<Product[] | null>(data);
+  const [products, setProducts] = useState<Product[] | null>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await http.get("/api/products");
+        const { data } = res.data;
+        setProducts(data.products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    getData();
+  }, []);
 
   return (
-    <div className="flex-1 px-4 space-y-4">
-      <section className="flex items-center justify-between">
+    <div className="flex-1 flex flex-col px-4 pb-4 overflow-hidden">
+      <section className="flex items-center justify-between py-4">
         <h1 className="text-xl">Products</h1>
 
         <InputGroup className="w-72">
           <InputGroupInput placeholder="Search product..." />
           <InputGroupAddon>
-            <SearchIcon />
+            <Search />
           </InputGroupAddon>
         </InputGroup>
       </section>
 
-      <div className="space-x-3">
-        <Button className="rounded-full px-3!" variant={"secondary"}>
+      <div className="space-x-3 pb-4">
+        <Button className="rounded-full px-3" variant={"secondary"}>
           Category here
         </Button>
 
         <Button
-          className="rounded-full px-3! text-muted-foreground"
+          className="rounded-full px-3 text-muted-foreground"
           variant={"ghost"}
         >
           Category here
         </Button>
         <Button
-          className="rounded-full px-3! text-muted-foreground"
+          className="rounded-full px-3 text-muted-foreground"
           variant={"ghost"}
         >
           Category here
         </Button>
       </div>
 
-      <div className="grid lg:grid-cols-4 xl:grid-cols-7 gap-3">
+      <div className="flex-1 overflow-y-auto space-y-4 hide-scrollbar">
         {products?.map((product) => (
           <div
             key={product.id}
-            className="border rounded-md h-70 p-3 flex flex-col justify-between"
+            className="border rounded-md p-4 flex items-center justify-between"
           >
-            <img
-              src={product?.image_url}
-              alt={product?.name}
-              className="w-full h-48 object-cover rounded"
-            />
-            <section>
-              <h1 className="font-medium text-sm">{product?.name}</h1>
-              <p className="text-muted-foreground">$ {product?.base_price}</p>
-            </section>
+            <div>
+              <h2 className="font-medium text-sm">{product.name}</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                {product.description}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <p className="text-muted-foreground">$ {product.base_price}</p>
+              <Button size="sm" variant="outline" asChild>
+                <Link to={`/products/${product.id}`}>View</Link>
+              </Button>
+            </div>
           </div>
         ))}
       </div>

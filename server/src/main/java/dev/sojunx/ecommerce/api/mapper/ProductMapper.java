@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
     public ProductDetails toDto(Product product) {
-        var variants = product.getVariants();
-
         return ProductDetails.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -18,7 +16,6 @@ public class ProductMapper {
                 .basePrice(product.getBasePrice())
                 .category(product.getCategory())
                 .imageUrl(product.getImageUrl())
-                .variants(variants.stream().map(this::toDto).toList())
                 .build();
     }
 

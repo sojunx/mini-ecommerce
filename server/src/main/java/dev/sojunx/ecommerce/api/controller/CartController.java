@@ -1,9 +1,11 @@
 package dev.sojunx.ecommerce.api.controller;
 
 import dev.sojunx.ecommerce.api.domain.entities.user.User;
+import dev.sojunx.ecommerce.api.dto.command.AddToCartCommand;
 import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
 import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
 import dev.sojunx.ecommerce.api.service.core.CartService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +33,12 @@ public class CartController {
         );
     }
 
-    record AddToCartCommand(String sku) {
-    }
-
-    @PostMapping("/")
+    @PostMapping
     ResponseEntity<?> addToCart(@RequestBody AddToCartCommand command, @AuthenticationPrincipal UserDetails userDetails) {
         var user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
 
-        service.addProduct(user, command.sku());
+        service.addProduct(user, command);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.success("Added item to cart successfully"), HttpStatus.OK);
     }
 }

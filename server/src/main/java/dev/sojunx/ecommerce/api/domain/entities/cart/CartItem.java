@@ -1,5 +1,6 @@
 package dev.sojunx.ecommerce.api.domain.entities.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.sojunx.ecommerce.api.domain.entities.product.ProductVariant;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;

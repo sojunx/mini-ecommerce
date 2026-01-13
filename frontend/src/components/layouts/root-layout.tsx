@@ -3,9 +3,12 @@ import { Outlet } from "react-router";
 
 const RootLayout = () => {
   return (
-    <main className="min-h-screen gap-3 flex flex-col bg-white select-none">
+    <main className="h-screen gap-3 flex flex-col bg-white select-none overflow-hidden">
       <Navbar />
-      <Outlet />
+
+      <div className="flex-1 overflow-y-auto">
+        <Outlet />
+      </div>
     </main>
   );
 };

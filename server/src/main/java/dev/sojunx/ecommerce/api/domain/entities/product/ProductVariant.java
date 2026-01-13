@@ -1,5 +1,6 @@
 package dev.sojunx.ecommerce.api.domain.entities.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.sojunx.ecommerce.api.domain.entities.cart.CartItem;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,10 +16,12 @@ public class ProductVariant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItem = new ArrayList<>();
 

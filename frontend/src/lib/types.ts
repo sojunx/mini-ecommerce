@@ -11,21 +11,21 @@ export interface SignInCommand {
   password: string;
 }
 
-export interface ProductVariant {
-  sku: string;
-  size: string;
-  color: string;
-  price: number;
-  stock_quantity: number;
-  image_url: string;
-}
-
 export interface Product {
-  id: string;
-  name: string;
-  description: string;
   base_price: number;
   category: string;
+  description: string;
+  id: string;
   image_url: string;
-  variants: ProductVariant[];
+  name: string;
+  variants?: ProductVariant[];
+}
+
+export interface ProductVariant {
+  color: string;
+  image_url: string;
+  price: number;
+  size: string;
+  sku: string;
+  stock_quantity: number;
 }

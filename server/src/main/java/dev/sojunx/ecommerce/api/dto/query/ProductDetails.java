@@ -1,5 +1,6 @@
 package dev.sojunx.ecommerce.api.dto.query;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.sojunx.ecommerce.api.domain.enums.ProductCategory;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDetails {
     private UUID id;
     private String name;
