@@ -1,44 +1,34 @@
 package dev.sojunx.ecommerce.api.controller;
 
-import dev.sojunx.ecommerce.api.domain.entities.user.User;
-import dev.sojunx.ecommerce.api.dto.command.AddToCartCommand;
-import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
-import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
-import dev.sojunx.ecommerce.api.service.core.CartService;
-import lombok.Data;
+import dev.sojunx.ecommerce.api.application.dto.command.AddToCartCommand;
+import dev.sojunx.ecommerce.api.application.dto.core.ApiResponse;
+import dev.sojunx.ecommerce.api.application.service.CartService;
+import dev.sojunx.ecommerce.api.domain.entities.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/cart")
-@PreAuthorize("hasRole('USER')")
+@RequestMapping("/api/carts")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService service;
-    private final CustomUserDetailsService userDetailsService;
 
     @GetMapping
-    ResponseEntity<?> getCart(@AuthenticationPrincipal UserDetails userDetails) {
-        var user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
-        var cart = service.findByUser(user);
+    ResponseEntity<?> getCart(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        var cart = service.findByUser(userDetails.user());
 
-        return new ResponseEntity<>(
-                ApiResponse.success("Fetched cart successfully", cart),
-                HttpStatus.OK
-        );
+        var res = ApiResponse.success("Fetched cart successfully", cart);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping
-    ResponseEntity<?> addToCart(@RequestBody AddToCartCommand command, @AuthenticationPrincipal UserDetails userDetails) {
-        var user = (User) userDetailsService.loadUserByUsername(userDetails.getUsername());
+    ResponseEntity<?> addToCart(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody AddToCartCommand command) {
+        service.addToCart(userDetails.user(), command);
 
-        service.addProduct(user, command);
-
-        return new ResponseEntity<>(ApiResponse.success("Added item to cart successfully"), HttpStatus.OK);
+        var res = ApiResponse.success("Added item to cart successfully");
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

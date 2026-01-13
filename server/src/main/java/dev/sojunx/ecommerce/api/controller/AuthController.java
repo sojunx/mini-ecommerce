@@ -1,14 +1,10 @@
 package dev.sojunx.ecommerce.api.controller;
 
-import dev.sojunx.ecommerce.api.domain.entities.user.User;
-import dev.sojunx.ecommerce.api.dto.command.SignInCommand;
-import dev.sojunx.ecommerce.api.dto.command.SignUpCommand;
-import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
-import dev.sojunx.ecommerce.api.service.auth.CookieService;
-import dev.sojunx.ecommerce.api.service.auth.CustomUserDetailsService;
-import dev.sojunx.ecommerce.api.service.auth.JwtService;
-import dev.sojunx.ecommerce.api.service.auth.RefreshTokenService;
-import dev.sojunx.ecommerce.api.service.core.UserService;
+import dev.sojunx.ecommerce.api.application.dto.command.SignInCommand;
+import dev.sojunx.ecommerce.api.application.dto.command.SignUpCommand;
+import dev.sojunx.ecommerce.api.application.dto.core.ApiResponse;
+import dev.sojunx.ecommerce.api.application.service.*;
+import dev.sojunx.ecommerce.api.domain.entities.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,51 +28,46 @@ public class AuthController {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
     private final UserService userService;
-    private final RefreshTokenService refreshTokenService;
+    private final SessionService sessionService;
     private final CookieService cookieService;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
     @PostMapping("/refresh")
-    ResponseEntity<?> refresh(HttpServletRequest req, HttpServletResponse res) {
+    ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
         // Extract refresh token from cookie
-        var cookie = cookieService.extractCookie(req, "refresh_token");
+        var cookie = cookieService.extractCookie(request, "refresh_token");
         if (cookie.isEmpty())
             throw new RuntimeException("Cookie not found");
 
         // Revoke old token
-        var token = refreshTokenService.revoke(cookie.get().getValue());
+        var token = sessionService.revoke(cookie.get().getValue());
         if (token == null)
             throw new RuntimeException("Token not found");
 
         // Get user details
-        var user = token.getUser();
+        var userDetails = new CustomUserDetails(token.getUser());
 
         // Generate new token
-        var access = jwtService.generateToken(user);
-        var refresh = jwtService.generateRefreshToken(user);
+        var access = jwtService.generateToken(userDetails);
+        var refresh = jwtService.generateRefreshToken(userDetails);
 
         // Save new token
-        refreshTokenService.save(user, refresh);
+        sessionService.save(userDetails.user(), refresh);
 
         // Set cookie for refresh token
-        cookieService.setCookie(res, "refresh_token", refresh, refreshExpiration);
+        cookieService.setCookie(response, "refresh_token", refresh, refreshExpiration);
 
-        return new ResponseEntity<>(
-                ApiResponse.success(
-                        "Signed out successfully",
-                        Map.of("access_token", access)
-                ),
-                HttpStatus.OK
-        );
+        var res = ApiResponse.success("Signed out successfully", Map.of("access_token", access));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/sign-out")
     ResponseEntity<?> signout(HttpServletRequest req, HttpServletResponse res) {
         // Revoke refresh token
         var cookie = cookieService.extractCookie(req, "refresh_token");
-        cookie.ifPresent(value -> refreshTokenService.revoke(value.getValue()));
+        cookie.ifPresent(value -> sessionService.revoke(value.getValue()));
 
         // Clear cookie
         cookieService.clearCookie(res, "refresh_token");
@@ -86,36 +77,29 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     ResponseEntity<?> signup(@RequestBody SignUpCommand command) {
-        userService.save(command);
+        var user = userService.save(command);
 
-        return new ResponseEntity<>(ApiResponse.success("Signed up successfully"), HttpStatus.CREATED);
+        var res = ApiResponse.success("Signed up successfully", Map.of("user", user));
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-in")
-    ResponseEntity<?> signin(@RequestBody SignInCommand command, HttpServletResponse res) {
+    ResponseEntity<?> signin(@RequestBody SignInCommand command, HttpServletResponse response) {
         // Authenticate user
         manager.authenticate(new UsernamePasswordAuthenticationToken(command.email(), command.password()));
-        var user = (User) userDetailsService.loadUserByUsername(command.email());
+        var userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(command.email());
 
         // Generate tokens
-        var token = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        var access = jwtService.generateToken(userDetails);
+        var refresh = jwtService.generateRefreshToken(userDetails);
 
-        // Revoke all tokens and save new token
-        // NOTES: This is not a good practice, but for demo purpose only
-        // Maybe revoke one token, not all tokens
-        refreshTokenService.revokeAll(user);
-        refreshTokenService.save(user, refreshToken);
+        sessionService.revokeAll(userDetails.user());
+        sessionService.save(userDetails.user(), refresh);
 
         // Set cookie for refresh token
-        cookieService.setCookie(res, "refresh_token", refreshToken, refreshExpiration);
+        cookieService.setCookie(response, "refresh_token", refresh, refreshExpiration);
 
-        return new ResponseEntity<>(
-                ApiResponse.success(
-                        "Signed in successfully",
-                        Map.of("access_token", token)
-                ),
-                HttpStatus.OK
-        );
+        var res = ApiResponse.success("Signed in successfully", Map.of("access_token", access));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

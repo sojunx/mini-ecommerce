@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.api.controller;
 
-import dev.sojunx.ecommerce.api.dto.helper.ApiResponse;
-import dev.sojunx.ecommerce.api.service.core.ProductService;
+import dev.sojunx.ecommerce.api.application.dto.core.ApiResponse;
+import dev.sojunx.ecommerce.api.application.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class ProductController {
     private final ProductService service;
 
     @GetMapping
-    ResponseEntity<?> getAllProducts() {
+    ResponseEntity<?> findAll() {
         var products = service.findAll();
 
         var res = ApiResponse.success("Fetched products successfully", Map.of("products", products));
@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> getProduct(@PathVariable UUID id) {
+    ResponseEntity<?> findById(@PathVariable UUID id) {
         var product = service.findById(id);
 
         var res = ApiResponse.success("Fetched product successfully", Map.of("product", product));
