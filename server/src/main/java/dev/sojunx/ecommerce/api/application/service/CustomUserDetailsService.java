@@ -1,6 +1,6 @@
 package dev.sojunx.ecommerce.api.application.service;
 
-import dev.sojunx.ecommerce.api.domain.entities.CustomUserDetails;
+import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import dev.sojunx.ecommerce.api.infrastructure.repository.UserRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package dev.sojunx.ecommerce.api.application.service;
 
 import dev.sojunx.ecommerce.api.application.mapper.SessionMapper;
-import dev.sojunx.ecommerce.api.domain.entities.Session;
-import dev.sojunx.ecommerce.api.domain.entities.User;
+import dev.sojunx.ecommerce.api.domain.entities.user.Session;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
 import dev.sojunx.ecommerce.api.infrastructure.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

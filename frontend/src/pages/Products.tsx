@@ -4,28 +4,30 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { http } from "@/lib/http";
+import { mockProducts } from "@/lib/data";
 import type { Product } from "@/lib/types";
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
 const Products = () => {
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [products, setProducts] = useState<Product[] | null>(
+    mockProducts.data.products
+  );
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await http.get("/api/products");
-        const { data } = res.data;
-        setProducts(data.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const res = await http.get("/api/products");
+  //       const { data } = res.data;
+  //       setProducts(data.products);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     }
+  //   };
 
-    getData();
-  }, []);
+  //   getData();
+  // }, []);
 
   return (
     <div className="flex-1 flex flex-col px-4 pb-4 overflow-hidden">
@@ -72,7 +74,7 @@ const Products = () => {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <p className="text-muted-foreground">$ {product.base_price}</p>
+              <p className="text-muted-foreground">$ {product.price}</p>
               <Button size="sm" variant="outline" asChild>
                 <Link to={`/products/${product.id}`}>View</Link>
               </Button>

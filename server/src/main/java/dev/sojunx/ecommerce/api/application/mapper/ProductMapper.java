@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.api.application.mapper;
 
 import dev.sojunx.ecommerce.api.application.dto.query.ProductDetails;
-import dev.sojunx.ecommerce.api.domain.entities.Product;
+import dev.sojunx.ecommerce.api.domain.entities.product.Product;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -4,7 +4,7 @@ import dev.sojunx.ecommerce.api.application.dto.command.SignInCommand;
 import dev.sojunx.ecommerce.api.application.dto.command.SignUpCommand;
 import dev.sojunx.ecommerce.api.application.dto.core.ApiResponse;
 import dev.sojunx.ecommerce.api.application.service.*;
-import dev.sojunx.ecommerce.api.domain.entities.CustomUserDetails;
+import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

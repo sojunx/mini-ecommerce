@@ -2,7 +2,7 @@ package dev.sojunx.ecommerce.api.application.mapper;
 
 import dev.sojunx.ecommerce.api.application.dto.command.SignUpCommand;
 import dev.sojunx.ecommerce.api.application.dto.query.UserDetails;
-import dev.sojunx.ecommerce.api.domain.entities.User;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
 import dev.sojunx.ecommerce.api.domain.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

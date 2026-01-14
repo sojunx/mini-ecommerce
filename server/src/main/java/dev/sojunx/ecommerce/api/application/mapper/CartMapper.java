@@ -2,8 +2,8 @@ package dev.sojunx.ecommerce.api.application.mapper;
 
 import dev.sojunx.ecommerce.api.application.dto.query.CartDetails;
 import dev.sojunx.ecommerce.api.application.dto.query.CartItemDetails;
-import dev.sojunx.ecommerce.api.domain.entities.Cart;
-import dev.sojunx.ecommerce.api.domain.entities.CartItem;
+import dev.sojunx.ecommerce.api.domain.entities.cart.Cart;
+import dev.sojunx.ecommerce.api.domain.entities.cart.CartItem;
 import org.springframework.stereotype.Component;
 
 @Component

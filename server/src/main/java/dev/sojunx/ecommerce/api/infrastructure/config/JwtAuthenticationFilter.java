@@ -4,7 +4,7 @@ import dev.sojunx.ecommerce.api.application.service.CookieService;
 import dev.sojunx.ecommerce.api.application.service.CustomUserDetailsService;
 import dev.sojunx.ecommerce.api.application.service.JwtService;
 import dev.sojunx.ecommerce.api.application.service.SessionService;
-import dev.sojunx.ecommerce.api.domain.entities.CustomUserDetails;
+import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

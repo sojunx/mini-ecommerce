@@ -1,6 +1,6 @@
 package dev.sojunx.ecommerce.api.application.dto.query;
 
-import dev.sojunx.ecommerce.api.domain.entities.Product;
+import dev.sojunx.ecommerce.api.domain.entities.product.Product;
 import dev.sojunx.ecommerce.api.domain.enums.ProductCategory;
 import lombok.Data;
 

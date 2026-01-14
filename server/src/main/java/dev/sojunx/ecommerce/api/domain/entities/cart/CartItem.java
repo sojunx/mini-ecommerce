@@ -1,5 +1,6 @@
-package dev.sojunx.ecommerce.api.domain.entities;
+package dev.sojunx.ecommerce.api.domain.entities.cart;
 
+import dev.sojunx.ecommerce.api.domain.entities.product.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;

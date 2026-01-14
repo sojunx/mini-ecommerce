@@ -1,6 +1,6 @@
 package dev.sojunx.ecommerce.api.application.dto.query;
 
-import dev.sojunx.ecommerce.api.domain.entities.CartItem;
+import dev.sojunx.ecommerce.api.domain.entities.cart.CartItem;
 import lombok.Data;
 
 import java.util.UUID;

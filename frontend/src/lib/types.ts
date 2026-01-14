@@ -12,20 +12,12 @@ export interface SignInCommand {
 }
 
 export interface Product {
-  base_price: number;
   category: string;
+  created_at: string;
   description: string;
   id: string;
-  image_url: string;
   name: string;
-  variants?: ProductVariant[];
-}
-
-export interface ProductVariant {
-  color: string;
-  image_url: string;
   price: number;
-  size: string;
   sku: string;
-  stock_quantity: number;
+  updated_at: string;
 }

@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.domain.entities;
+package dev.sojunx.ecommerce.api.domain.entities.user;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;

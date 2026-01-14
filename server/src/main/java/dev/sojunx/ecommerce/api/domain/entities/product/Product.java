@@ -1,5 +1,6 @@
-package dev.sojunx.ecommerce.api.domain.entities;
+package dev.sojunx.ecommerce.api.domain.entities.product;
 
+import dev.sojunx.ecommerce.api.domain.entities.cart.CartItem;
 import dev.sojunx.ecommerce.api.domain.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.api.infrastructure.repository;
 
-import dev.sojunx.ecommerce.api.domain.entities.Cart;
-import dev.sojunx.ecommerce.api.domain.entities.User;
+import dev.sojunx.ecommerce.api.domain.entities.cart.Cart;
+import dev.sojunx.ecommerce.api.domain.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
