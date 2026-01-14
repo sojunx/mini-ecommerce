@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.helper;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

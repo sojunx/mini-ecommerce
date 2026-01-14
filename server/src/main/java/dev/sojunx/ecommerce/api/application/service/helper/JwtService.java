@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.helper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

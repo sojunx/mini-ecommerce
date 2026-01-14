@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.user;
 
 import dev.sojunx.ecommerce.api.application.dto.command.SignUpCommand;
 import dev.sojunx.ecommerce.api.application.dto.query.UserDetails;

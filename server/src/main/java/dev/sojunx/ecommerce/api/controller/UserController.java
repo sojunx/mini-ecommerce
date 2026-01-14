@@ -2,7 +2,7 @@ package dev.sojunx.ecommerce.api.controller;
 
 import dev.sojunx.ecommerce.api.application.dto.core.ApiResponse;
 import dev.sojunx.ecommerce.api.application.mapper.UserMapper;
-import dev.sojunx.ecommerce.api.application.service.UserService;
+import dev.sojunx.ecommerce.api.application.service.user.UserService;
 import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

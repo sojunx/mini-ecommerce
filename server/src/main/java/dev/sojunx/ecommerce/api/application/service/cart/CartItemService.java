@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.cart;
 
 import dev.sojunx.ecommerce.api.application.dto.command.AddToCartCommand;
 import dev.sojunx.ecommerce.api.domain.entities.cart.CartItem;

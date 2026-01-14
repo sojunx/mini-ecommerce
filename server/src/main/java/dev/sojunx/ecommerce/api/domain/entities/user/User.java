@@ -1,6 +1,7 @@
 package dev.sojunx.ecommerce.api.domain.entities.user;
 
 import dev.sojunx.ecommerce.api.domain.entities.cart.Cart;
+import dev.sojunx.ecommerce.api.domain.entities.product.Review;
 import dev.sojunx.ecommerce.api.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,9 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = List.of();
 
     @PrePersist
     private void onSave() {

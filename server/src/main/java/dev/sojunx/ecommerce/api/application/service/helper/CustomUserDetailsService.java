@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.helper;
 
 import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import dev.sojunx.ecommerce.api.infrastructure.repository.UserRepository;

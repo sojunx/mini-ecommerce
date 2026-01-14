@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.api.application.service;
+package dev.sojunx.ecommerce.api.application.service.cart;
 
 import dev.sojunx.ecommerce.api.application.dto.query.CartDetails;
 import dev.sojunx.ecommerce.api.application.mapper.CartMapper;

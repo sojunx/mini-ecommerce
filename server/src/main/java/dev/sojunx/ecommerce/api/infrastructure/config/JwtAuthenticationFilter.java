@@ -1,9 +1,9 @@
 package dev.sojunx.ecommerce.api.infrastructure.config;
 
-import dev.sojunx.ecommerce.api.application.service.CookieService;
-import dev.sojunx.ecommerce.api.application.service.CustomUserDetailsService;
-import dev.sojunx.ecommerce.api.application.service.JwtService;
-import dev.sojunx.ecommerce.api.application.service.SessionService;
+import dev.sojunx.ecommerce.api.application.service.helper.CookieService;
+import dev.sojunx.ecommerce.api.application.service.helper.CustomUserDetailsService;
+import dev.sojunx.ecommerce.api.application.service.helper.JwtService;
+import dev.sojunx.ecommerce.api.application.service.user.SessionService;
 import dev.sojunx.ecommerce.api.domain.entities.user.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,10 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,21 +34,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final SessionService sessionService;
     private final CookieService cookieService;
 
-    private final List<String> whitelist = List.of(
-            "/api/auth/sign-in",
-            "/api/auth/sign-up",
-            "/api/auth/refresh",
-            "/api/auth/sign-out",
-            "/h2-console",
-            "/v3/api-docs",
-            "/swagger-ui",
-            "/api/products"
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    record EndpointMatcher(String pattern, HttpMethod method) { }
+
+    private final List<EndpointMatcher> whiteList = List.of(
+            new EndpointMatcher("/api/auth/**", null),
+            new EndpointMatcher("/h2-console/**", null),
+            new EndpointMatcher("/v3/api-docs/**", null),
+            new EndpointMatcher("/swagger-ui/**", null),
+            new EndpointMatcher("/api/reviews/**", HttpMethod.GET),
+            new EndpointMatcher("/api/products/**", HttpMethod.GET)
     );
 
     @Override
-    protected boolean shouldNotFilter(@NonNull HttpServletRequest req) throws ServletException {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest req) {
+        var path = req.getServletPath();
+        var method = req.getMethod();
 
-        return whitelist.stream().anyMatch(req.getServletPath()::startsWith);
+        return whiteList.stream().anyMatch(endpoint -> {
+            var matchPath = pathMatcher.match(endpoint.pattern(), path);
+
+            var matchMethod = endpoint.method() == null || endpoint.method().name().equalsIgnoreCase(method);
+
+            return matchPath && matchMethod;
+        });
     }
 
     @Override
@@ -69,6 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null)
                 authenticate(req, token, cookie.get().getValue(), email);
 
+            // FIXME: Bug here, user have token but not return error
             log.info("User authenticated with token: {}", token);
         } catch (Exception e) {
             log.error("Could not set user authentication in security context", e);
