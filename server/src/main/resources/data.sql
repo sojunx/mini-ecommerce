@@ -11,7 +11,8 @@ INSERT INTO carts (id, user_id)
 VALUES (1, 'e9609483-293e-4bc0-a4de-04d04b5d6ea3');
 
 INSERT INTO products (id, sku, name, description, price, category, created_at, updated_at)
-VALUES (random_uuid(), 'SKU-001', 'Classic White T-Shirt', 'A comfortable 100% cotton white t-shirt.', 19.99,
+VALUES ('2e9194bc-2063-4da2-b93f-749d008adcff', 'SKU-001', 'Classic White T-Shirt',
+        'A comfortable 100% cotton white t-shirt.', 19.99,
         'CLOTHING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
        (random_uuid(), 'SKU-002', 'Wireless Headphones', 'Noise-canceling over-ear wireless headphones.', 149.50,
