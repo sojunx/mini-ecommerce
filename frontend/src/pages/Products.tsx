@@ -4,33 +4,31 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { mockProducts } from "@/lib/data";
+import { http } from "@/lib/http";
 import type { Product } from "@/lib/types";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 const Products = () => {
-  const [products, setProducts] = useState<Product[] | null>(
-    mockProducts.data.products
-  );
+  const [products, setProducts] = useState<Product[] | null>(null);
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       const res = await http.get("/api/products");
-  //       const { data } = res.data;
-  //       setProducts(data.products);
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await http.get("/api/products");
+        const { data } = res.data;
+        setProducts(data.products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
-  //   getData();
-  // }, []);
+    getData();
+  }, []);
 
   return (
-    <div className="flex-1 flex flex-col px-4 pb-4 overflow-hidden">
+    <div className="flex-1 h-full flex flex-col px-4 pb-4 overflow-hidden">
       <section className="flex items-center justify-between py-4">
         <h1 className="text-xl">Products</h1>
 
@@ -61,27 +59,35 @@ const Products = () => {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-4 hide-scrollbar">
-        {products?.map((product) => (
-          <div
-            key={product.id}
-            className="border rounded-md p-4 flex items-center justify-between"
-          >
-            <div>
-              <h2 className="font-medium text-sm">{product.name}</h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                {product.description}
-              </p>
+      {products && (
+        <div className="flex-1 overflow-y-auto space-y-4 hide-scrollbar">
+          {products?.map((product) => (
+            <div
+              key={product.id}
+              className="border rounded-md p-4 flex items-center justify-between"
+            >
+              <div>
+                <h2 className="font-medium text-sm">{product.name}</h2>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {product.description}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-muted-foreground">$ {product.price}</p>
+                <Button size="sm" variant="outline" asChild>
+                  <Link to={`/products/${product.id}`}>View</Link>
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <p className="text-muted-foreground">$ {product.price}</p>
-              <Button size="sm" variant="outline" asChild>
-                <Link to={`/products/${product.id}`}>View</Link>
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {!products && (
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground">Not products found</p>
+        </div>
+      )}
     </div>
   );
 };

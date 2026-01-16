@@ -39,7 +39,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (data?.access_token)
         sessionStorage.setItem("access_token", data.access_token);
     } catch (error: any) {
-      console.log(error.response);
+      // console.log(error.response);
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = res.data?.data;
       if (data) setUser(data);
     } catch (error: any) {
-      console.log(error.response);
+      // console.log(error.response);
     } finally {
       setLoading(false);
     }

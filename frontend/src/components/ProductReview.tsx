@@ -1,46 +1,67 @@
-import { useState } from "react";
-import { Star, User, Clock, MessageSquareReply, PenLine } from "lucide-react";
-import { mockReviews, type ReviewDTO } from "@/lib/reviews";
-import { Modal } from "antd";
-import { Button } from "@/components/ui/button";
+import { http } from "@/lib/http";
+import { Clock, Star, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
-const RATING_TEXT: Record<number, string> = {
-  1: "Rất tệ",
-  2: "Tệ",
-  3: "Bình thường",
-  4: "Tốt",
-  5: "Rất tuyệt vời",
-};
+// const RATING_TEXT: Record<number, string> = {
+//   1: "Rất tệ",
+//   2: "Tệ",
+//   3: "Bình thường",
+//   4: "Tốt",
+//   5: "Rất tuyệt vời",
+// };
+
+interface Review {
+  id: string;
+  rating: number;
+  title: string;
+  comment: string;
+  full_name: string;
+  created_at: Date;
+  updated_at: Date;
+}
 
 const ProductReview = () => {
-  const [reviews, setReviews] = useState<ReviewDTO[]>(mockReviews);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rating, setRating] = useState<number | null>(null);
-  const [hoverRating, setHoverRating] = useState<number | null>(null);
-  const [comment, setComment] = useState("");
-  const [name, setName] = useState("");
+  const { id } = useParams<{ id: string }>();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [rating, setRating] = useState<number | null>(null);
+  // const [hoverRating, setHoverRating] = useState<number | null>(null);
+  // const [comment, setComment] = useState("");
+  // const [name, setName] = useState("");
 
-  const handleSubmit = () => {
-    if (!rating || !comment || !name) return;
+  useEffect(() => {
+    const getData = async () => {
+      const res = await http.get(`/api/reviews/${id}`);
+      const { data } = res.data;
 
-    const newReview: ReviewDTO = {
-      id: Date.now().toString(),
-      rating,
-      title: hoverRating ? RATING_TEXT[hoverRating] : RATING_TEXT[rating],
-      comment,
-      created_at: new Date().toISOString(),
-      user: {
-        full_name: name,
-      },
+      setReviews(data.reviews);
     };
 
-    setReviews((prev) => [newReview, ...prev]);
+    getData();
+  }, [id]);
 
-    setRating(0);
-    setComment("");
-    setName("");
-    setIsModalOpen(false);
-  };
+  // const handleSubmit = () => {
+  //   if (!rating || !comment || !name) return;
+
+  //   const newReview: ReviewDTO = {
+  //     id: Date.now().toString(),
+  //     rating,
+  //     title: hoverRating ? RATING_TEXT[hoverRating] : RATING_TEXT[rating],
+  //     comment,
+  //     created_at: new Date().toISOString(),
+  //     user: {
+  //       full_name: name,
+  //     },
+  //   };
+
+  //   // setReviews((prev) => [newReview, ...prev]);
+
+  //   setRating(0);
+  //   setComment("");
+  //   setName("");
+  //   setIsModalOpen(false);
+  // };
 
   return (
     <div className="max-w-7xl mx-auto px-4 mt-16 border-t">
@@ -72,7 +93,7 @@ const ProductReview = () => {
               <div className="flex items-center gap-4 text-sm text-gray-500 mt-3">
                 <div className="flex items-center gap-1">
                   <User size={14} />
-                  {review.user.full_name}
+                  {review.full_name}
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock size={14} />
@@ -80,7 +101,7 @@ const ProductReview = () => {
                 </div>
               </div>
 
-              {review.response && (
+              {/* {review.response && (
                 <div className="mt-4 border-l-4 border-[#ee4d2d] bg-gray-50 pl-4 py-3 rounded">
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                     <MessageSquareReply size={16} />
@@ -90,12 +111,12 @@ const ProductReview = () => {
                     {review.response.response_text}
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center pt-8">
+        {/* <div className="flex justify-center pt-8">
           <Button
             onClick={() => setIsModalOpen(true)}
             size="xl"
@@ -155,7 +176,7 @@ const ProductReview = () => {
             className="w-full border rounded-lg px-4 py-3 mb-6"
             placeholder="Tên của bạn"
           />
-        </Modal>
+        </Modal> */}
       </div>
     </div>
   );

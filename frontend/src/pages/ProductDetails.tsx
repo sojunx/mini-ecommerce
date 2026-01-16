@@ -1,6 +1,6 @@
 import ProductReview from "@/components/ProductReview";
 import { Button } from "@/components/ui/button";
-import { mockProducts } from "@/lib/data";
+import { http } from "@/lib/http";
 import { mockReviews } from "@/lib/reviews";
 import type { Product } from "@/lib/types";
 import { Star } from "lucide-react";
@@ -19,11 +19,13 @@ const ProductDetails = () => {
       : 0;
 
   useEffect(() => {
-    const foundProduct = mockProducts.data.products.find((p) => p.id === id);
+    const getData = async () => {
+      const res = await http.get(`/api/products/${id}`);
+      const { data } = res.data;
+      setProduct(data.product);
+    };
 
-    if (!foundProduct) return;
-
-    setProduct(foundProduct);
+    getData();
   }, [id]);
 
   if (!product) return <div>loading...</div>;
@@ -61,6 +63,7 @@ const ProductDetails = () => {
               ${product.price.toLocaleString("vi-VN")}
             </div>
 
+            {/* Reviews */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-yellow-500">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -105,9 +108,7 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      <div>
-        <ProductReview />
-      </div>
+      <ProductReview />
     </>
   );
 };

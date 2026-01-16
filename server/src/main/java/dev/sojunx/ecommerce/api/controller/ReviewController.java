@@ -20,6 +20,12 @@ import java.util.UUID;
 public class ReviewController {
     private final ReviewService service;
 
+    @GetMapping("/{id}/rating")
+    ResponseEntity<?> getProductRating(@PathVariable UUID id) {
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     // This is product id
     @GetMapping("/{id}")
     ResponseEntity<?> getProductReviews(@PathVariable UUID id) {

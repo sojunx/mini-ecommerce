@@ -10,6 +10,7 @@ import java.util.UUID;
 public class ReviewDetails {
     private UUID id;
 
+    private String fullName; // User name
     private int rating;
     private String title;
     private String comment;
@@ -17,6 +18,7 @@ public class ReviewDetails {
     private LocalDateTime updatedAt;
 
     public ReviewDetails(Review review) {
+        this.fullName = review.getUser().getFullName();
         this.id = review.getId();
         this.rating = review.getRating();
         this.title = review.getTitle();
