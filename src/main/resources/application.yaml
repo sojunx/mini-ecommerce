@@ -1,0 +1,28 @@
+spring:
+  application.name: mini-ecommerce
+
+  jpa:
+    hibernate.ddl-auto: create-drop
+    defer-datasource-initialization: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/mini_ecommerce}
+    username: ${DATASOURCE_USERNAME:mini_ecommerce}
+    password: ${DATASOURCE_PASSWORD:password}
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+    property-naming-strategy: SNAKE_CASE
+
+#  sql.init:
+#    mode: always
+#    data-locations: classpath:init.sql
+
+jwt:
+  secret: myVerySecretKey123456789012345678901234567890
+  expiration: 86400000
+
+logging.level:
+  mini.ecommerce: INFO
+  org.springframework.web: DEBUG
