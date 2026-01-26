@@ -17,11 +17,7 @@ spring:
 
   sql.init:
     mode: always
-    data-locations: classpath:init.sql
-
-jwt:
-  secret: myVerySecretKey123456789012345678901234567890
-  expiration: 86400000
+    data-locations: classpath:data.sql
 
 logging.level:
   mini.ecommerce: INFO

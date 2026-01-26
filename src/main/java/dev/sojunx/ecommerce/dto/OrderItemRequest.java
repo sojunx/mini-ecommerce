@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.dto.request;
+package dev.sojunx.ecommerce.dto;
 
 import lombok.Data;
 

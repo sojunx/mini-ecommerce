@@ -1,10 +1,12 @@
-package dev.sojunx.ecommerce.entity;
+package dev.sojunx.ecommerce.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity(name = "order_items")
 @Data
@@ -16,15 +18,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private Order order;
+    @Column(nullable = false)
+    private UUID productId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
-
-    private String name;
+    @Column(nullable = false)
+    private UUID orderId;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -35,8 +33,12 @@ public class OrderItem {
     @Column(nullable = false)
     private Double total;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isReviewed = false;
+
     @PrePersist
-    private void prePersist() {
+    void onSave() {
         total = price * quantity;
     }
 }

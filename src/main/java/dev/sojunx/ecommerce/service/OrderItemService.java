@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.service;
 
-import dev.sojunx.ecommerce.dto.response.OrderItemDto;
-import dev.sojunx.ecommerce.mapper.OrderItemMapper;
+import dev.sojunx.ecommerce.domain.entity.OrderItem;
+import dev.sojunx.ecommerce.dto.OrderItemRequest;
 import dev.sojunx.ecommerce.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderItemService {
     private final OrderItemRepository repository;
-    private final OrderItemMapper mapper;
+    private final ProductService productService;
 
-    public List<OrderItemDto> getAllItemsByOrderId(UUID id) {
-        var items = repository.findAllByOrder_Id(id);
+    public void saveItem(OrderItem item) {
+        repository.save(item);
+    }
 
-        return items.stream().map(mapper::toDto).toList();
+    public void createOrderItem(OrderItemRequest request, UUID orderId) {
+        var product = productService.getProductById(request.getProductId());
+
+        var item = new OrderItem();
+        item.setProductId(product.getId());
+        item.setOrderId(orderId);
+        item.setQuantity(request.getQuantity());
+        item.setPrice(product.getPrice());
+
+        repository.save(item);
+    }
+
+    public List<OrderItem> getItemsByOrderId(UUID id) {
+        return repository.findAllByOrderId(id);
+    }
+
+    public OrderItem getItemByOrderIdAndProductId(UUID orderId, UUID productId) {
+        var result = repository.findByOrderIdAndProductId(orderId, productId);
+        if (result.isEmpty())
+            throw new RuntimeException("Order item not found with order id: " + orderId + " and product id: " + productId);
+
+        return result.get();
     }
 }

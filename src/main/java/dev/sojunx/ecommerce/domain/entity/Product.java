@@ -1,6 +1,5 @@
-package dev.sojunx.ecommerce.entity;
+package dev.sojunx.ecommerce.domain.entity;
 
-import dev.sojunx.ecommerce.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,31 +10,28 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "products")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
-    private String password;
+    private String description;
 
     @Column(nullable = false)
-    private String firstName;
+    private Double price;
 
     @Column(nullable = false)
-    private String lastName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role = UserRole.USER;
+    private String image;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

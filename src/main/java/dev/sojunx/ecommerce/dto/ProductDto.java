@@ -1,6 +1,5 @@
-package dev.sojunx.ecommerce.dto.response;
+package dev.sojunx.ecommerce.dto;
 
-import dev.sojunx.ecommerce.enums.ProductCategory;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,7 +11,6 @@ public class ProductDto {
     private UUID id;
     private String name;
     private String description;
-    private ProductCategory category;
     private Double price;
-    private boolean isAvailable;
+    private String image;
 }

@@ -1,48 +1,42 @@
-package dev.sojunx.ecommerce.entity;
+package dev.sojunx.ecommerce.domain.entity;
 
-import dev.sojunx.ecommerce.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity(name = "products")
+@Entity
+@Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "order_id"}))
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
-    private String name;
+    private UUID productId;
 
     @Column(nullable = false)
-    private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProductCategory category;
+    private UUID orderId;
 
     @Column(nullable = false)
-    private Integer stock;
+    private String email;
 
     @Column(nullable = false)
-    private Double price;
+    private Integer rating;
+
+    @Column(nullable = false)
+    private String comment;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,6 @@
-package dev.sojunx.ecommerce.entity;
+package dev.sojunx.ecommerce.domain.entity;
 
-import dev.sojunx.ecommerce.enums.OrderStatus;
+import dev.sojunx.ecommerce.domain.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +10,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "orders")
+@Entity
+@Table(name = "orders")
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,24 +23,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
-
-    @Column(nullable = false)
-    private String fullName;
-
     @Column(nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private String phoneNumber;
 
     @Column(nullable = false)
     private Double total;
@@ -58,11 +41,4 @@ public class Order {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    private void prePersist() {
-        if (!items.isEmpty()) items.forEach(item -> item.setOrder(this));
-
-        total = items.stream().mapToDouble(OrderItem::getTotal).sum();
-    }
 }
