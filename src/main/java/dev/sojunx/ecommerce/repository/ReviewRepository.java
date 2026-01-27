@@ -1,6 +1,7 @@
 package dev.sojunx.ecommerce.repository;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
+import dev.sojunx.ecommerce.dto.RatingCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     @Query("SELECT COALESCE(AVG(r.rating), 0.0) FROM Review r WHERE r.productId = :productId")
     Double averageRatingByProductId(@Param("productId") UUID productId);
+
+    @Query("SELECT r.rating as rating, COUNT(r) as count FROM Review r WHERE r.productId = :productId GROUP BY r.rating ORDER BY r.rating")
+    List<RatingCount> getRatingDistributionByProductId(@Param("productId") UUID productId);
 }

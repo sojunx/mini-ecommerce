@@ -4,6 +4,7 @@ import dev.sojunx.ecommerce.domain.entity.Review;
 import dev.sojunx.ecommerce.domain.enums.OrderStatus;
 import dev.sojunx.ecommerce.dto.ReviewRequest;
 import dev.sojunx.ecommerce.dto.ReviewStats;
+import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class ReviewService {
     private final ReviewRepository repository;
     private final OrderService orderService;
     private final OrderItemService itemService;
+    private final ReviewMapper mapper;
 
     @Transactional(readOnly = true)
     public List<Review> getReviews(UUID id) {
@@ -54,10 +56,13 @@ public class ReviewService {
     public ReviewStats getReviewStats(UUID id) {
         var total = repository.countReviewsByProductId(id);
         var avg = repository.averageRatingByProductId(id);
+        var distribution = repository.getRatingDistributionByProductId(id);
 
+        var result = distribution.stream().map(mapper::toDto).toList();
         return ReviewStats.builder()
                 .total(total)
                 .averageRating(avg)
+                .ratingsCount(result)
                 .build();
     }
 }
