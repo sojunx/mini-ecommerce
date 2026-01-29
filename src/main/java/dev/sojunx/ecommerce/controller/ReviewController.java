@@ -3,6 +3,7 @@ package dev.sojunx.ecommerce.controller;
 import dev.sojunx.ecommerce.dto.ApiResponse;
 import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
+import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,11 @@ public class ReviewController {
     }
 
     @PutMapping
-    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id) {
+    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id, @RequestBody UpdateReviewRequest request) {
+        var review = service.updateReview(id, request);
 
-        return null;
+        var res = ApiResponse.success("Success", mapper.toDto(review));
+        return ResponseEntity.ok(res);
     }
 
     @DeleteMapping
