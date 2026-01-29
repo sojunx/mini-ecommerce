@@ -33,7 +33,7 @@ const LandingPage = () => {
 
           <div className="flex flex-wrap gap-6 text-sm text-muted-foreground pt-2">
             <span>Free shipping</span>
-            <span>30-day returns</span>
+            <span>30days returns</span>
             <span>Secure checkout</span>
           </div>
         </div>
