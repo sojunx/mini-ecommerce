@@ -8,6 +8,8 @@ import OrderSuccessPage from "@/pages/order-success";
 import ProductPage from "@/pages/product";
 import ShopPage from "@/pages/shop";
 import { createBrowserRouter } from "react-router";
+import LoginPage from "@/pages/login";
+import RegisterPage from "@/pages/register";
 
 const routes = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const routes = createBrowserRouter([
               .then((res) => res.data),
           };
         },
+      },
+      {
+        path: "login",
+        Component: LoginPage,
+      },
+      {
+        path: "register",
+        Component: RegisterPage,
       },
       {
         path: "checkout",

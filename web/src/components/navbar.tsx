@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, User } from "lucide-react";
 import { Link } from "react-router";
 
 const Navbar = () => {
@@ -17,16 +17,25 @@ const Navbar = () => {
           <Link to="/about">About</Link>
         </div>
 
-        <Button asChild variant="ghost" className="relative">
-          <Link to="/cart" aria-label="Open shopping bag">
-            <ShoppingBag />
-            {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                {cart.length}
-              </span>
-            )}
-          </Link>
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/login" className="flex items-center gap-2">
+              <User size={18} />
+              Login
+            </Link>
+          </Button>
+
+          <Button asChild variant="ghost" className="relative">
+            <Link to="/cart" aria-label="Open shopping bag">
+              <ShoppingBag />
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                  {cart.length}
+                </span>
+              )}
+            </Link>
+          </Button>
+        </div>
       </div>
     </nav>
   );
