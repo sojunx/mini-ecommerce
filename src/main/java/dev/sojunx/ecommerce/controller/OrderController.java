@@ -42,9 +42,9 @@ public class OrderController {
 
     @PostMapping
     ResponseEntity<ApiResponse> createOrder(@RequestBody OrderRequest request) {
-        var order = mapper.toDto(service.createOrder(request));
+        var order = service.createOrder(request);
 
-        var res = ApiResponse.success("Success", order);
+        var res = ApiResponse.success("Success", mapper.toDto(order));
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 

@@ -2,7 +2,9 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
 import dev.sojunx.ecommerce.domain.entity.User;
+import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
+import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.dto.response.ReviewStats;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
@@ -69,5 +71,30 @@ public class ReviewService {
                 .averageRating(avg)
                 .ratingsCount(result)
                 .build();
+    }
+
+    @Transactional
+    public Review updateReview(UUID id, UpdateReviewRequest request) {
+        var result = repository.findById(id);
+        if (result.isEmpty())
+            throw new RuntimeException("Review not found with id: " + id);
+
+        var review = result.get();
+        // TODO: validate user
+
+        if (request.getRating() != null)
+            review.setRating(request.getRating());
+        if (request.getComment() != null)
+            review.setComment(request.getComment());
+
+        return repository.save(review);
+    }
+
+    @Transactional
+    public void deleteReview(UUID id, DeleteReviewRequest request) {
+        if (request.getUserId() != null)
+            repository.deleteByIdAndUserId(id, request.getUserId());
+        else
+            repository.deleteByIdAndEmail(id, request.getEmail());
     }
 }

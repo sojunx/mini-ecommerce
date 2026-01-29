@@ -1,7 +1,9 @@
 package dev.sojunx.ecommerce.controller;
 
 import dev.sojunx.ecommerce.dto.ApiResponse;
+import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
+import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +37,27 @@ public class ReviewController {
         return ResponseEntity.ok(res);
     }
 
-
     @PostMapping
     ResponseEntity<ApiResponse> createReview(@PathVariable UUID id, @RequestBody ReviewRequest request) {
         var review = service.createReview(id, request);
 
         var res = ApiResponse.success("Success", mapper.toDto(review));
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @PutMapping
+    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id, @RequestBody UpdateReviewRequest request) {
+        var review = service.updateReview(id, request);
+
+        var res = ApiResponse.success("Success", mapper.toDto(review));
+        return ResponseEntity.ok(res);
+    }
+
+    @DeleteMapping
+    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @RequestBody DeleteReviewRequest request) {
+        service.deleteReview(id, request);
+
+        var res = ApiResponse.success("Success");
+        return ResponseEntity.ok(res);
     }
 }
