@@ -1,49 +1,26 @@
 const AboutPage = () => {
   return (
-    <div className="space-y-12">
-      <section className="bg-muted/40 border border-border rounded-3xl p-10">
-        <div className="max-w-2xl">
+    <div className="space-y-16">
+      <section className="bg-muted/40 border border-border rounded-3xl p-12">
+        <div className="max-w-3xl space-y-4">
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
-            About Us
+            Welcome
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight mt-2">
-            A modern essentials brand built on comfort and simplicity.
+          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
+            Modern products designed for everyday comfort
           </h1>
-          <p className="text-muted-foreground mt-4">
-            We believe the best products are the ones that feel effortless to
-            use, wear, and live with. Every piece we offer is designed to be
-            timeless, functional, and responsibly made.
+          <p className="text-muted-foreground max-w-2xl">
+            Discover thoughtfully designed essentials made to simplify your
+            daily life — clean, functional, and built to last.
           </p>
-        </div>
-      </section>
 
-      <section className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">Our mission</h2>
-          <p className="text-sm text-muted-foreground">
-            Create products that make daily life feel better. We focus on clean
-            design, quality materials, and fair pricing so you can shop with
-            confidence.
-          </p>
-        </div>
-        <div className="bg-muted/40 border border-border rounded-2xl p-6">
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Happy customers", value: "12k+" },
-              { label: "Products designed", value: "320" },
-              { label: "Countries served", value: "28" },
-              { label: "Years of craft", value: "8" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-xl border border-border p-4"
-              >
-                <p className="text-xl font-semibold">{stat.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
+          <div className="flex gap-4 pt-4">
+            <button className="px-6 py-3 rounded-xl bg-primary text-primary-foreground">
+              Shop now
+            </button>
+            <button className="px-6 py-3 rounded-xl border border-border">
+              Learn more
+            </button>
           </div>
         </div>
       </section>
@@ -51,16 +28,16 @@ const AboutPage = () => {
       <section className="grid md:grid-cols-3 gap-6">
         {[
           {
-            title: "Design-led",
-            desc: "Every detail is intentional, from material to packaging.",
+            title: "Minimal design",
+            desc: "Clean aesthetics that never go out of style.",
           },
           {
-            title: "Responsibly made",
-            desc: "We partner with suppliers who care about quality and people.",
+            title: "Premium quality",
+            desc: "Carefully selected materials for lasting comfort.",
           },
           {
-            title: "Customer-first",
-            desc: "We’re here to help at every step of your purchase.",
+            title: "Fair pricing",
+            desc: "No middlemen. Quality you can trust.",
           },
         ].map((item) => (
           <div
@@ -71,6 +48,39 @@ const AboutPage = () => {
             <p className="text-sm text-muted-foreground">{item.desc}</p>
           </div>
         ))}
+      </section>
+
+      <section className="bg-muted/40 border border-border rounded-3xl p-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { label: "Customers", value: "12k+" },
+            { label: "Products", value: "320+" },
+            { label: "Reviews", value: "4.9/5" },
+            { label: "Years", value: "8+" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-xl border border-border p-6 text-center"
+            >
+              <p className="text-2xl font-semibold">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="text-center space-y-4">
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Ready to elevate your everyday essentials?
+        </h2>
+        <p className="text-muted-foreground max-w-xl mx-auto">
+          Join thousands of customers who trust our products for comfort,
+          simplicity, and quality.
+        </p>
+        <button className="px-8 py-3 rounded-xl bg-primary text-primary-foreground">
+          Get started
+        </button>
       </section>
     </div>
   );

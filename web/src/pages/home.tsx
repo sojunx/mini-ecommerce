@@ -1,40 +1,56 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 
-const HomePage = () => {
+const LandingPage = () => {
   return (
-    <div className="space-y-16">
-      <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
-        <div className="space-y-6">
+    <div className="space-y-20">
+      <section className="min-h-[90vh] py-12 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
+        <div className="space-y-8">
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
             New Collection
           </p>
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-            Everyday essentials, designed to feel good.
+
+          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
+            Everyday essentials,
+            <br />
+            designed to feel good.
           </h1>
-          <p className="text-muted-foreground text-base leading-relaxed">
+
+          <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
             Discover curated pieces built for comfort, style, and durability.
-            Shop modern essentials tailored for your daily routine.
+            Modern essentials tailored for your daily routine.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-3">
             <Button asChild size="lg">
               <Link to="/shop">Shop Now</Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+
+            <Button asChild size="lg" variant="outline">
               <Link to="/about">Learn More</Link>
             </Button>
           </div>
+
+          <div className="flex flex-wrap gap-6 text-sm text-muted-foreground pt-2">
+            <span>Free shipping</span>
+            <span>30-day returns</span>
+            <span>Secure checkout</span>
+          </div>
         </div>
 
-        <div className="bg-muted/60 border border-border rounded-3xl p-6">
-          <div className="aspect-4/3 rounded-2xl overflow-hidden bg-muted">
+        <div className="bg-muted/50 border border-border rounded-3xl p-4">
+          <div className="aspect-4/3 rounded-2xl overflow-hidden relative">
             <img
-              src="/hero.png"
+              src="/slide.png"
               alt="Featured products"
-              draggable={false}
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
           </div>
+
+          <p className="mt-4 text-sm text-muted-foreground">
+            Our best-selling essentials
+          </p>
         </div>
       </section>
 
@@ -46,7 +62,7 @@ const HomePage = () => {
           },
           {
             title: "Thoughtful Design",
-            desc: "Functional details and clean silhouettes for daily wear.",
+            desc: "Functional details and clean silhouettes for everyday wear.",
           },
           {
             title: "Fast Shipping",
@@ -55,35 +71,45 @@ const HomePage = () => {
         ].map((item) => (
           <div
             key={item.title}
-            className="bg-muted/40 border border-border rounded-2xl p-6"
+            className="rounded-2xl border bg-muted/40 p-6 space-y-2"
           >
-            <h3 className="font-medium text-lg mb-2">{item.title}</h3>
+            <h3 className="text-lg font-medium">{item.title}</h3>
             <p className="text-sm text-muted-foreground">{item.desc}</p>
           </div>
         ))}
       </section>
 
-      <section className="bg-muted/40 border border-border rounded-3xl p-8 md:p-10">
-        <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Built for the long run</h2>
-            <p className="text-sm text-muted-foreground">
-              From design to delivery, we obsess over the details so you don’t
-              have to. Shop our most-loved essentials today.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button asChild size="lg">
-              <Link to="/shop">Explore Products</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link to="/cart">View Cart</Link>
-            </Button>
-          </div>
+      <section className="text-center space-y-6">
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">
+          Trusted by thousands
+        </p>
+
+        <h2 className="text-2xl font-semibold">Loved by customers worldwide</h2>
+
+        <div className="flex justify-center flex-wrap gap-8 opacity-70">
+          <span className="text-sm font-medium">10,000+ Customers</span>
+          <span className="text-sm font-medium">4.8★ Average Rating</span>
+          <span className="text-sm font-medium">Worldwide Shipping</span>
+        </div>
+      </section>
+
+      <section className="rounded-3xl bg-primary text-primary-foreground p-10 md:p-14 text-center space-y-6">
+        <h2 className="text-3xl font-semibold">
+          Ready to upgrade your everyday essentials?
+        </h2>
+
+        <p className="text-sm opacity-90 max-w-xl mx-auto">
+          Shop our most-loved products and experience the difference today.
+        </p>
+
+        <div className="flex justify-center">
+          <Button asChild size="lg" variant="secondary">
+            <Link to="/shop">Shop the Collection</Link>
+          </Button>
         </div>
       </section>
     </div>
   );
 };
 
-export default HomePage;
+export default LandingPage;
