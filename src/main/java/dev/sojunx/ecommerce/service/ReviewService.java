@@ -1,9 +1,9 @@
 package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
-import dev.sojunx.ecommerce.domain.enums.OrderStatus;
-import dev.sojunx.ecommerce.dto.ReviewRequest;
-import dev.sojunx.ecommerce.dto.ReviewStats;
+import dev.sojunx.ecommerce.domain.entity.User;
+import dev.sojunx.ecommerce.dto.request.ReviewRequest;
+import dev.sojunx.ecommerce.dto.response.ReviewStats;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,7 @@ public class ReviewService {
     private final OrderService orderService;
     private final OrderItemService itemService;
     private final ReviewMapper mapper;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<Review> getReviews(UUID id) {
@@ -28,21 +29,25 @@ public class ReviewService {
 
     @Transactional
     public Review createReview(UUID id, ReviewRequest request) {
-        var order = orderService.getOrderById(id);
-        if (!order.getEmail().equals(request.getEmail()))
-            throw new RuntimeException("You can't review this order");
+        User user = null;
+        if (request.getUserId() != null)
+            user = userService.getUserById(request.getUserId());
 
-        if (order.getStatus() != OrderStatus.COMPLETED)
-            throw new RuntimeException("Order not completed");
+        var order = orderService.getOrderById(id);
 
         var item = itemService.getItemByOrderIdAndProductId(id, request.getProductId());
         if (item.isReviewed())
             throw new RuntimeException("Product already reviewed");
 
         var review = new Review();
-        review.setEmail(request.getEmail());
+        if (user != null) {
+            review.setEmail(user.getEmail());
+            review.setUserId(user.getId());
+        } else
+            review.setEmail(request.getEmail());
+
         review.setProductId(item.getProductId());
-        review.setOrderId(id);
+        review.setOrderId(order.getId());
         review.setRating(request.getRating());
         review.setComment(request.getComment());
 

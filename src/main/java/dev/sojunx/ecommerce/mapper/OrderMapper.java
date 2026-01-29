@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.mapper;
 
 import dev.sojunx.ecommerce.domain.entity.Order;
-import dev.sojunx.ecommerce.dto.OrderDto;
+import dev.sojunx.ecommerce.dto.response.OrderDto;
 import org.springframework.stereotype.Component;
 
 @Component

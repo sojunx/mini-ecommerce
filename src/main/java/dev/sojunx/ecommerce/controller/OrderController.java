@@ -2,7 +2,7 @@ package dev.sojunx.ecommerce.controller;
 
 import dev.sojunx.ecommerce.domain.enums.OrderStatus;
 import dev.sojunx.ecommerce.dto.ApiResponse;
-import dev.sojunx.ecommerce.dto.OrderRequest;
+import dev.sojunx.ecommerce.dto.request.OrderRequest;
 import dev.sojunx.ecommerce.mapper.OrderItemMapper;
 import dev.sojunx.ecommerce.mapper.OrderMapper;
 import dev.sojunx.ecommerce.service.OrderItemService;

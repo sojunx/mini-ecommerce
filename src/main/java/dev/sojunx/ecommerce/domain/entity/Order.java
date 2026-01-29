@@ -23,11 +23,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private UUID userId;
+
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private Double total;
+    @Builder.Default
+    private Double total = 0.0;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

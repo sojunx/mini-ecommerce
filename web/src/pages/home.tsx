@@ -27,7 +27,7 @@ const HomePage = () => {
         </div>
 
         <div className="bg-muted/60 border border-border rounded-3xl p-6">
-          <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
+          <div className="aspect-4/3 rounded-2xl overflow-hidden bg-muted">
             <img
               src="/hero.png"
               alt="Featured products"

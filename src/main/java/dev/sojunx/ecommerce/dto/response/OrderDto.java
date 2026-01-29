@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.dto;
+package dev.sojunx.ecommerce.dto.response;
 
 import dev.sojunx.ecommerce.domain.enums.OrderStatus;
 import lombok.Builder;

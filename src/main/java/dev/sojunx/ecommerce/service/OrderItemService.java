@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.OrderItem;
-import dev.sojunx.ecommerce.dto.OrderItemRequest;
+import dev.sojunx.ecommerce.dto.request.OrderItemRequest;
 import dev.sojunx.ecommerce.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.repository;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
-import dev.sojunx.ecommerce.dto.RatingCount;
+import dev.sojunx.ecommerce.domain.entity.RatingCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

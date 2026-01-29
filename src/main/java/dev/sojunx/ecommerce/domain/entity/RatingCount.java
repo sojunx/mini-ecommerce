@@ -1,4 +1,4 @@
-package dev.sojunx.ecommerce.dto;
+package dev.sojunx.ecommerce.domain.entity;
 
 public interface RatingCount {
     Integer getRating();

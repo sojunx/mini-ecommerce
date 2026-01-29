@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.controller;
 
 import dev.sojunx.ecommerce.dto.ApiResponse;
-import dev.sojunx.ecommerce.dto.ReviewRequest;
+import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +38,9 @@ public class ReviewController {
 
     @PostMapping
     ResponseEntity<ApiResponse> createReview(@PathVariable UUID id, @RequestBody ReviewRequest request) {
-        var review = mapper.toDto(service.createReview(id, request));
+        var review = service.createReview(id, request);
 
-        var res = ApiResponse.success("Success", review);
+        var res = ApiResponse.success("Success", mapper.toDto(review));
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 }

@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { ShoppingBag, User } from "lucide-react";
 import { Link } from "react-router";
 
 const Navbar = () => {
   const { cart } = useCart();
+  const { user } = useAuth();
 
   return (
     <nav className="outline">
@@ -18,12 +20,18 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild variant="outline" size="sm">
-            <Link to="/login" className="flex items-center gap-2">
-              <User size={18} />
-              Login
-            </Link>
-          </Button>
+          {!user && (
+            <Button asChild variant="outline" size="sm">
+              <Link to="/login" className="flex items-center gap-2">
+                <User size={18} />
+                Login
+              </Link>
+            </Button>
+          )}
+
+          {user && (
+            <span className="text-sm font-medium">Hello, {user.name}</span>
+          )}
 
           <Button asChild variant="ghost" className="relative">
             <Link to="/cart" aria-label="Open shopping bag">

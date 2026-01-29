@@ -1,3 +1,20 @@
+export interface Order {
+  created_at: string;
+  email: string;
+  id: string;
+  status: string;
+  total: number;
+  updated_at: string;
+}
+
+export interface OrderItem {
+  id: number;
+  price: number;
+  product_id: string;
+  quantity: number;
+  total: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -27,4 +44,10 @@ export interface ProductDetails {
   product: Product;
   reviews: Review[];
   review_stats: ReviewStats;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
 }

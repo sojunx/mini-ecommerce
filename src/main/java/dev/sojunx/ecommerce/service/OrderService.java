@@ -2,8 +2,9 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Order;
 import dev.sojunx.ecommerce.domain.entity.OrderItem;
+import dev.sojunx.ecommerce.domain.entity.User;
 import dev.sojunx.ecommerce.domain.enums.OrderStatus;
-import dev.sojunx.ecommerce.dto.OrderRequest;
+import dev.sojunx.ecommerce.dto.request.OrderRequest;
 import dev.sojunx.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,20 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository repository;
     private final OrderItemService itemService;
+    private final UserService userService;
 
     @Transactional
     public Order createOrder(OrderRequest request) {
+        User user = null;
+        if (request.getUserId() != null)
+            user = userService.getUserById(request.getUserId());
+
         var order = new Order();
-        order.setEmail(request.getEmail());
-        order.setTotal(0.00);
+        if (user != null) {
+            order.setEmail(user.getEmail());
+            order.setUserId(user.getId());
+        } else
+            order.setEmail(request.getEmail());
 
         var saved = repository.save(order);
         request.getItems().forEach(item -> itemService.createOrderItem(item, saved.getId()));

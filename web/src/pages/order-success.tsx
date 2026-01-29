@@ -108,6 +108,13 @@ const OrderSuccessPage = () => {
                 Continue Shopping
               </Button>
               <Button variant="outline" onClick={() => navigate("/cart")}>
+                View Cart
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(`/orders/${orderId}`)}
+                disabled={!orderId || orderId === "—"}
+              >
                 View Order
               </Button>
             </div>

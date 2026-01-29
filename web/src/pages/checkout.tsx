@@ -2,24 +2,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import http from "@/lib/http";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const CheckoutPage = () => {
   const { cart, total, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
+  const isAnonymous = !userId;
+
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email);
+    }
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      const resolvedEmail = user?.email || email;
       const orderData = {
-        email,
+        email: resolvedEmail,
         items: cart.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -34,7 +46,7 @@ const CheckoutPage = () => {
       navigate("/order-success", {
         state: {
           orderId,
-          email,
+          email: resolvedEmail,
           items: itemsSnapshot,
           total: totalSnapshot,
         },
@@ -83,19 +95,26 @@ const CheckoutPage = () => {
           <div>
             <h2 className="text-lg font-medium mb-4">Contact Information</h2>
             <div className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="bg-white"
-                />
-              </div>
+              {isAnonymous ? (
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="bg-white"
+                  />
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
+                  Using account email{" "}
+                  <span className="font-medium">{email}</span>
+                </div>
+              )}
             </div>
           </div>
 

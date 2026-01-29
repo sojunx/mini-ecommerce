@@ -4,12 +4,13 @@ import AboutPage from "@/pages/about";
 import CartPage from "@/pages/cart";
 import CheckoutPage from "@/pages/checkout";
 import HomePage from "@/pages/home";
+import LoginPage from "@/pages/login";
+import OrderPage from "@/pages/order";
 import OrderSuccessPage from "@/pages/order-success";
 import ProductPage from "@/pages/product";
+import RegisterPage from "@/pages/register";
 import ShopPage from "@/pages/shop";
 import { createBrowserRouter } from "react-router";
-import LoginPage from "@/pages/login";
-import RegisterPage from "@/pages/register";
 
 const routes = createBrowserRouter([
   {
@@ -35,6 +36,20 @@ const routes = createBrowserRouter([
 
             review_stats: await http
               .get(`/api/reviews/${params.id}/stats`)
+              .then((res) => res.data),
+          };
+        },
+      },
+      {
+        path: "orders/:id",
+        Component: OrderPage,
+        loader: async ({ params }) => {
+          return {
+            order: await http
+              .get(`/api/orders/${params.id}`)
+              .then((res) => res.data),
+            items: await http
+              .get(`/api/orders/${params.id}/items`)
               .then((res) => res.data),
           };
         },

@@ -1,9 +1,9 @@
 package dev.sojunx.ecommerce.mapper;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
-import dev.sojunx.ecommerce.dto.RatingCount;
-import dev.sojunx.ecommerce.dto.RatingCountDto;
-import dev.sojunx.ecommerce.dto.ReviewDto;
+import dev.sojunx.ecommerce.domain.entity.RatingCount;
+import dev.sojunx.ecommerce.dto.response.RatingCountDto;
+import dev.sojunx.ecommerce.dto.response.ReviewDto;
 import org.springframework.stereotype.Component;
 
 @Component
