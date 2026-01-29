@@ -23,6 +23,7 @@ public class OrderItemService {
         var product = productService.getProductById(request.getProductId());
 
         var item = new OrderItem();
+        item.setName(product.getName());
         item.setProductId(product.getId());
         item.setOrderId(orderId);
         item.setQuantity(request.getQuantity());

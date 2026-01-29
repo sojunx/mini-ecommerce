@@ -25,6 +25,9 @@ public class OrderItem {
     private UUID orderId;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private Integer quantity;
 
     @Column(nullable = false)

@@ -35,12 +35,25 @@ public class ReviewController {
         return ResponseEntity.ok(res);
     }
 
-
     @PostMapping
     ResponseEntity<ApiResponse> createReview(@PathVariable UUID id, @RequestBody ReviewRequest request) {
         var review = service.createReview(id, request);
 
         var res = ApiResponse.success("Success", mapper.toDto(review));
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @PutMapping
+    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id) {
+
+        return null;
+    }
+
+    @DeleteMapping
+    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @RequestParam(name = "user_id") UUID userId) {
+        service.deleteReview(id, userId);
+
+        var res = ApiResponse.success("Success");
+        return ResponseEntity.ok(res);
     }
 }

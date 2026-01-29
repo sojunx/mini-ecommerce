@@ -1,7 +1,7 @@
 package dev.sojunx.ecommerce.repository;
 
-import dev.sojunx.ecommerce.domain.entity.Review;
 import dev.sojunx.ecommerce.domain.entity.RatingCount;
+import dev.sojunx.ecommerce.domain.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +21,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     @Query("SELECT r.rating as rating, COUNT(r) as count FROM Review r WHERE r.productId = :productId GROUP BY r.rating ORDER BY r.rating")
     List<RatingCount> getRatingDistributionByProductId(@Param("productId") UUID productId);
+
+    void deleteByIdAndUserId(UUID id, UUID userId);
 }

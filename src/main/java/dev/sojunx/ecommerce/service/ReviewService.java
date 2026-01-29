@@ -70,4 +70,12 @@ public class ReviewService {
                 .ratingsCount(result)
                 .build();
     }
+
+    @Transactional
+    public Review updateReview(UUID id) { return null; }
+
+    @Transactional
+    public void deleteReview(UUID id, UUID userId) {
+        repository.deleteByIdAndUserId(id, userId);
+    }
 }
