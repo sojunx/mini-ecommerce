@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ecommerce_hub -d ecommerce_hub" ]
+      test: [ "CMD-SHELL", "pg_isready -U mini_ecommerce -d mini_ecommerce" ]
       interval: 10s
       timeout: 5s
       retries: 5
