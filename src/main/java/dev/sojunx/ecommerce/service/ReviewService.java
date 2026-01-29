@@ -2,6 +2,7 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
 import dev.sojunx.ecommerce.domain.entity.User;
+import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.dto.response.ReviewStats;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
@@ -75,7 +76,10 @@ public class ReviewService {
     public Review updateReview(UUID id) { return null; }
 
     @Transactional
-    public void deleteReview(UUID id, UUID userId) {
-        repository.deleteByIdAndUserId(id, userId);
+    public void deleteReview(UUID id, DeleteReviewRequest request) {
+        if (request.getUserId() != null)
+            repository.deleteByIdAndUserId(id, request.getUserId());
+        else
+            repository.deleteByIdAndEmail(id, request.getEmail());
     }
 }

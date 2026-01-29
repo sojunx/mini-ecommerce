@@ -1,6 +1,7 @@
 package dev.sojunx.ecommerce.controller;
 
 import dev.sojunx.ecommerce.dto.ApiResponse;
+import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.service.ReviewService;
@@ -50,8 +51,8 @@ public class ReviewController {
     }
 
     @DeleteMapping
-    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @RequestParam(name = "user_id") UUID userId) {
-        service.deleteReview(id, userId);
+    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @RequestBody DeleteReviewRequest request) {
+        service.deleteReview(id, request);
 
         var res = ApiResponse.success("Success");
         return ResponseEntity.ok(res);

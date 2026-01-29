@@ -23,4 +23,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     List<RatingCount> getRatingDistributionByProductId(@Param("productId") UUID productId);
 
     void deleteByIdAndUserId(UUID id, UUID userId);
+
+    void deleteByIdAndEmail(UUID id, String email);
 }
