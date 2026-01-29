@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATASOURC21E_URL:jdbc:postgresql://localhost:5432/mini_ecommerce}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/mini_ecommerce}
     username: ${DATASOURCE_USERNAME:mini_ecommerce}
     password: ${DATASOURCE_PASSWORD:password}
 
