@@ -27,29 +27,7 @@ public class ReviewService {
     public List<Review> getReviews(UUID id) {
         return repository.findAllByProductId(id);
     }
-
-    @Transactional
-    public Review createReview(ReviewRequest request) {
-        var order = orderService.getOrderById(request.getOrderId());
-
-        var item = itemService.getItemByOrderIdAndProductId(request.getOrderId(), request.getProductId());
-        if (item.isReviewed())
-            throw new RuntimeException("Product already reviewed");
-
-        var review = new Review();
-        review.setEmail(request.getEmail());
-
-        review.setProductId(item.getProductId());
-        review.setOrderId(order.getId());
-        review.setRating(request.getRating());
-        review.setComment(request.getComment());
-
-        item.setReviewed(true);
-        itemService.saveItem(item);
-
-        return repository.save(review);
-    }
-
+    
     @Transactional
     public Review createReview(ReviewRequest request, User user) {
         var order = orderService.getOrderById(request.getOrderId());

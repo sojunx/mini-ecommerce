@@ -18,6 +18,7 @@ const RatingForm = ({ item, order }: { item: OrderItem; order: Order }) => {
       const res = await http.post("/api/reviews", data);
 
       console.log(res);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
