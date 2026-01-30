@@ -40,10 +40,11 @@ const CheckoutPage = () => {
 
       const response = await http.post("/api/orders", orderData);
       const orderId = response?.data?.order_id ?? response?.data?.id;
+      const successOrderId = orderId ?? "unknown";
       const itemsSnapshot = cart;
       const totalSnapshot = total;
       clearCart();
-      navigate("/order-success", {
+      navigate(`/orders/${successOrderId}/success`, {
         state: {
           orderId,
           email: resolvedEmail,

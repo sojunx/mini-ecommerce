@@ -1,52 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/hooks/useCart";
-import http from "@/lib/http";
 import type { ProductDetails } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { ChevronLeft, Star } from "lucide-react";
-import { useState } from "react";
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, useNavigate } from "react-router";
 
 const ProductPage = () => {
   const { product, reviews, review_stats } = useLoaderData<ProductDetails>();
-
   const { addToCart } = useCart();
-  const [orderId, setOrderId] = useState("");
-  const [email, setEmail] = useState("");
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orderId || !email || !comment) return;
-
-    setIsSubmitting(true);
-    try {
-      await http.post(`/api/reviews/${orderId}`, {
-        product_id: product.id,
-        email,
-        comment,
-        rating: Number(rating),
-      });
-      setOrderId("");
-      setEmail("");
-      setRating(5);
-      setComment("");
-      alert("Review submitted successfully!");
-    } catch (error) {
-      console.error("Review submission failed:", error);
-      alert("Failed to submit review. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-8">
@@ -115,6 +80,10 @@ const ProductPage = () => {
               size="lg"
               variant="outline"
               className="w-full text-base font-semibold"
+              onClick={() => {
+                addToCart(product);
+                navigate("/cart");
+              }}
             >
               Buy Now
             </Button>
@@ -127,7 +96,7 @@ const ProductPage = () => {
         <h1 className="text-2xl font-serif">Reviews</h1>
 
         <div>
-          <div className="grid gap-6 md:grid-cols-[220px_1fr] items-center bg-muted outline rounded-xl p-6">
+          <div className="grid gap-6 md:grid-cols-[220px_1fr] items-center outline rounded-xl p-6">
             <div className="flex flex-col items-center text-center space-y-3">
               <h1 className="text-5xl font-semibold tracking-tight">
                 {review_stats.average_rating.toFixed(1)}
@@ -166,7 +135,7 @@ const ProductPage = () => {
 
                     <div className="flex-1 h-2.5 outline bg-background rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-primary transition-all"
+                        className="h-full bg-muted-foreground transition-all"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -179,87 +148,6 @@ const ProductPage = () => {
               })}
             </div>
           </div>
-
-          <form
-            onSubmit={handleReviewSubmit}
-            className="mt-8 space-y-5 rounded-2xl border bg-muted/30 p-6"
-          >
-            <div>
-              <h2 className="text-lg font-semibold">Write a review</h2>
-              <p className="text-sm text-muted-foreground">
-                Please enter your order information to submit a review.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => {
-                const isActive = star <= (hoverRating || rating);
-
-                return (
-                  <Star
-                    key={star}
-                    className={`h-6 w-6 cursor-pointer transition-colors ${
-                      isActive
-                        ? "fill-yellow-500 text-yellow-500"
-                        : "text-gray-300"
-                    }`}
-                    onClick={() => setRating(star)}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                  />
-                );
-              })}
-
-              {(hoverRating || rating) > 0 && (
-                <span className="ml-2 text-sm text-muted-foreground">
-                  {hoverRating || rating}/5
-                </span>
-              )}
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="order-id">Order ID</Label>
-                <Input
-                  id="order-id"
-                  value={orderId}
-                  onChange={(e) => setOrderId(e.target.value)}
-                  placeholder="e.g. #12345"
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="review-email">Email</Label>
-                <Input
-                  id="review-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="space-y-1">
-                <Label htmlFor="comment">Comment</Label>
-                <Textarea
-                  id="comment"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Share your experience…"
-                  rows={4}
-                  required
-                />
-              </div>
-            </div>
-
-            <Button type="submit" disabled={isSubmitting} className="w-fit">
-              {isSubmitting ? "Submitting..." : "Submit Review"}
-            </Button>
-          </form>
 
           <div className="mt-6 space-y-4">
             {reviews.map((review) => (

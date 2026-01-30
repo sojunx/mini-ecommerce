@@ -4,12 +4,12 @@ import AboutPage from "@/pages/about";
 import CartPage from "@/pages/cart";
 import CheckoutPage from "@/pages/checkout";
 import HomePage from "@/pages/home";
-import LoginPage from "@/pages/login";
-import OrderPage from "@/pages/order";
-import OrderSuccessPage from "@/pages/order-success";
-import ProductPage from "@/pages/product";
-import RegisterPage from "@/pages/register";
-import ShopPage from "@/pages/shop";
+import LoginPage from "@/pages/auth/login";
+import OrderPage from "@/pages/orders/details";
+import OrderSuccessPage from "@/pages/orders/succcess";
+import ProductPage from "@/pages/products/details";
+import RegisterPage from "@/pages/auth/register";
+import ShopPage from "@/pages/products/shop";
 import { createBrowserRouter } from "react-router";
 
 const routes = createBrowserRouter([
@@ -67,7 +67,7 @@ const routes = createBrowserRouter([
         Component: CheckoutPage,
       },
       {
-        path: "order-success",
+        path: "orders/:id/success",
         Component: OrderSuccessPage,
       },
       {
