@@ -7,6 +7,7 @@ import dev.sojunx.ecommerce.domain.enums.OrderStatus;
 import dev.sojunx.ecommerce.dto.request.OrderRequest;
 import dev.sojunx.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,31 +18,35 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository repository;
     private final OrderItemService itemService;
-    private final UserService userService;
+
+    @Transactional
+    public Order createOrder(OrderRequest request, User user) {
+        var order = new Order();
+        order.setEmail(user.getEmail());
+        order.setUserId(user.getId());
+
+        return updateTotal(request, repository.save(order));
+    }
 
     @Transactional
     public Order createOrder(OrderRequest request) {
-        User user = null;
-        if (request.getUserId() != null)
-            user = userService.getUserById(request.getUserId());
-
         var order = new Order();
-        if (user != null) {
-            order.setEmail(user.getEmail());
-            order.setUserId(user.getId());
-        } else
-            order.setEmail(request.getEmail());
+        order.setEmail(request.getEmail());
 
-        var saved = repository.save(order);
-        request.getItems().forEach(item -> itemService.createOrderItem(item, saved.getId()));
-
-        var items = itemService.getItemsByOrderId(saved.getId());
-        var total = items.stream().mapToDouble(OrderItem::getTotal).sum();
-        saved.setTotal(total);
-
-        return repository.save(saved);
+        return updateTotal(request, repository.save(order));
     }
 
+    @NonNull
+    private Order updateTotal(OrderRequest request, Order order) {
+        request.getItems().forEach(item -> itemService.createOrderItem(item, order.getId()));
+
+        var items = itemService.getItemsByOrderId(order.getId());
+        var total = items.stream().mapToDouble(OrderItem::getTotal).sum();
+        order.setTotal(total);
+
+        return repository.save(order);
+    }
+    
     public Order getOrderById(UUID id) {
         var result = repository.findById(id);
         if (result.isEmpty())

@@ -1,6 +1,6 @@
 package dev.sojunx.ecommerce.controller;
 
-import dev.sojunx.ecommerce.domain.enums.OrderStatus;
+import dev.sojunx.ecommerce.config.CustomUserDetails;
 import dev.sojunx.ecommerce.dto.ApiResponse;
 import dev.sojunx.ecommerce.dto.request.OrderRequest;
 import dev.sojunx.ecommerce.mapper.OrderItemMapper;
@@ -8,16 +8,18 @@ import dev.sojunx.ecommerce.mapper.OrderMapper;
 import dev.sojunx.ecommerce.service.OrderItemService;
 import dev.sojunx.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class OrderController {
     private final OrderService service;
     private final OrderItemService itemService;
@@ -41,18 +43,10 @@ public class OrderController {
     }
 
     @PostMapping
-    ResponseEntity<ApiResponse> createOrder(@RequestBody OrderRequest request) {
-        var order = service.createOrder(request);
+    ResponseEntity<ApiResponse> createOrder(@RequestBody OrderRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        var order = service.createOrder(request, userDetails.user());
 
         var res = ApiResponse.success("Success", mapper.toDto(order));
         return new ResponseEntity<>(res, HttpStatus.CREATED);
-    }
-
-    @PatchMapping("/{id}")
-    ResponseEntity<ApiResponse> completeOrder(@PathVariable UUID id) {
-        service.updateOrderStatus(id, OrderStatus.COMPLETED);
-
-        var res = ApiResponse.success("Success");
-        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

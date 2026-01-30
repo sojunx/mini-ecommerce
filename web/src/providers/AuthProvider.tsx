@@ -8,10 +8,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getData = async () => {
-      const id = localStorage.getItem("user_id");
-      if (!id) return;
+      const res = await http.get("/api/users/me");
 
-      const res = await http.get(`/api/users/${id}`);
       setUser(res.data);
     };
 
@@ -26,15 +24,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await http.post("/api/users/login", { email });
 
-      localStorage.setItem("user_id", res.data.id);
+      setUser(res.data);
       window.location.href = "/";
     } catch (e) {
       console.log(e);
     }
   };
 
+  const register = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+
+    try {
+      await http.post("/api/users/register", { name, email });
+      window.location.href = "/login";
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login }}>
+    <AuthContext.Provider value={{ user, login, register }}>
       {children}
     </AuthContext.Provider>
   );

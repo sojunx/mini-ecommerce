@@ -14,6 +14,7 @@ export interface OrderItem {
   product_id: string;
   quantity: number;
   total: number;
+  reviewed: boolean;
 }
 
 export interface Product {

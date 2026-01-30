@@ -1,15 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
 import { Label } from "@radix-ui/react-label";
-import { useState } from "react";
 
 const RegisterPage = () => {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const { register } = useAuth();
 
   return (
     <div className="flex items-center justify-center">
-      <form className="w-full max-w-md space-y-6 border bg-white p-10 rounded-xl shadow-sm">
+      <form
+        className="w-full max-w-md space-y-6 border bg-white p-10 rounded-xl shadow-sm"
+        onSubmit={register}
+      >
         <div>
           <Label htmlFor="email">Name</Label>
           <Input
@@ -17,8 +19,6 @@ const RegisterPage = () => {
             name="name"
             type="name"
             required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
             placeholder="Your Name"
             className="bg-white"
           />
@@ -30,8 +30,6 @@ const RegisterPage = () => {
             name="email"
             type="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             className="bg-white"
           />

@@ -1,14 +1,14 @@
 import RootLayout from "@/layouts/root";
 import http from "@/lib/http";
 import AboutPage from "@/pages/about";
+import LoginPage from "@/pages/auth/login";
+import RegisterPage from "@/pages/auth/register";
 import CartPage from "@/pages/cart";
 import CheckoutPage from "@/pages/checkout";
 import HomePage from "@/pages/home";
-import LoginPage from "@/pages/auth/login";
 import OrderPage from "@/pages/orders/details";
 import OrderSuccessPage from "@/pages/orders/succcess";
 import ProductPage from "@/pages/products/details";
-import RegisterPage from "@/pages/auth/register";
 import ShopPage from "@/pages/products/shop";
 import { createBrowserRouter } from "react-router";
 
@@ -69,6 +69,16 @@ const routes = createBrowserRouter([
       {
         path: "orders/:id/success",
         Component: OrderSuccessPage,
+        loader: async ({ params }) => {
+          return {
+            order: await http
+              .get(`/api/orders/${params.id}`)
+              .then((res) => res.data),
+            items: await http
+              .get(`/api/orders/${params.id}/items`)
+              .then((res) => res.data),
+          };
+        },
       },
       {
         path: "cart",

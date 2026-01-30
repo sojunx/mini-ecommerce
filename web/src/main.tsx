@@ -1,5 +1,5 @@
-import AuthProvider from "@/providers/auth-provider";
-import CartProvider from "@/providers/cart-provider";
+import AuthProvider from "@/providers/AuthProvider";
+import CartProvider from "@/providers/CartProvider";
 import routes from "@/routes";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router";

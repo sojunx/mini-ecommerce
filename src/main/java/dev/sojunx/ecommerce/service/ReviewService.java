@@ -22,7 +22,6 @@ public class ReviewService {
     private final OrderService orderService;
     private final OrderItemService itemService;
     private final ReviewMapper mapper;
-    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<Review> getReviews(UUID id) {
@@ -30,23 +29,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review createReview(UUID id, ReviewRequest request) {
-        User user = null;
-        if (request.getUserId() != null)
-            user = userService.getUserById(request.getUserId());
+    public Review createReview(ReviewRequest request) {
+        var order = orderService.getOrderById(request.getOrderId());
 
-        var order = orderService.getOrderById(id);
-
-        var item = itemService.getItemByOrderIdAndProductId(id, request.getProductId());
+        var item = itemService.getItemByOrderIdAndProductId(request.getOrderId(), request.getProductId());
         if (item.isReviewed())
             throw new RuntimeException("Product already reviewed");
 
         var review = new Review();
-        if (user != null) {
-            review.setEmail(user.getEmail());
-            review.setUserId(user.getId());
-        } else
-            review.setEmail(request.getEmail());
+        review.setEmail(request.getEmail());
 
         review.setProductId(item.getProductId());
         review.setOrderId(order.getId());
@@ -57,6 +48,30 @@ public class ReviewService {
         itemService.saveItem(item);
 
         return repository.save(review);
+    }
+
+    @Transactional
+    public Review createReview(ReviewRequest request, User user) {
+        var order = orderService.getOrderById(request.getOrderId());
+        var item = itemService.getItemByOrderIdAndProductId(request.getOrderId(), request.getProductId());
+
+        if (item.isReviewed())
+            throw new RuntimeException("Product already reviewed");
+
+        var review = new Review();
+        review.setEmail(user.getEmail());
+        review.setUserId(user.getId());
+
+        review.setProductId(item.getProductId());
+        review.setOrderId(order.getId());
+        review.setRating(request.getRating());
+        review.setComment(request.getComment());
+
+        item.setReviewed(true);
+        itemService.saveItem(item);
+
+        return repository.save(review);
+
     }
 
     @Transactional(readOnly = true)

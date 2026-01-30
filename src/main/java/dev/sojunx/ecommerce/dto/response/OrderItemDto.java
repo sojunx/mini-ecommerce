@@ -14,4 +14,5 @@ public class OrderItemDto {
     private Integer quantity;
     private Double price;
     private Double total;
+    private boolean isReviewed;
 }

@@ -5,13 +5,19 @@ import { useCart } from "@/hooks/useCart";
 import type { ProductDetails } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { ChevronLeft, Star } from "lucide-react";
+import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router";
 
 const ProductPage = () => {
   const { product, reviews, review_stats } = useLoaderData<ProductDetails>();
+  const [rating, setRating] = useState<number | null>(null);
   const { addToCart } = useCart();
 
   const navigate = useNavigate();
+
+  const filteredReviews = rating
+    ? reviews.filter((review) => review.rating === rating)
+    : reviews;
 
   return (
     <div className="space-y-8">
@@ -150,7 +156,33 @@ const ProductPage = () => {
           </div>
 
           <div className="mt-6 space-y-4">
-            {reviews.map((review) => (
+            <div className="flex flex-wrap gap-2">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <label
+                  key={rating}
+                  className="group flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:border-primary"
+                >
+                  <input
+                    type="radio"
+                    value={rating}
+                    name="filter-rating"
+                    onClick={() => setRating(rating)}
+                    defaultChecked={rating === 5}
+                    className="peer sr-only"
+                  />
+                  <span className="text-amber-500">★</span>
+                  <span className="text-foreground">{rating}</span>
+                </label>
+              ))}
+              <button
+                onClick={() => setRating(null)}
+                className="border px-4 rounded-md flex justify-center items-center bg-red-400 text-white cursor-pointer"
+              >
+                <span>x</span>
+              </button>
+            </div>
+
+            {filteredReviews.map((review) => (
               <div
                 key={review.id}
                 className="rounded-xl border bg-background p-5 space-y-3"

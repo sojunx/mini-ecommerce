@@ -2,7 +2,6 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.User;
 import dev.sojunx.ecommerce.dto.request.UserLoginRequest;
-import dev.sojunx.ecommerce.dto.request.UserLogoutRequest;
 import dev.sojunx.ecommerce.dto.request.UserRegisterRequest;
 import dev.sojunx.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +33,8 @@ public class UserService {
         return repository.save(user);
     }
 
-    public void logout(UserLogoutRequest request) {
-        var result = repository.findByEmail(request.getEmail());
+    public void logout(String email) {
+        var result = repository.findByEmail(email);
         if (result.isEmpty())
             throw new RuntimeException("Invalid credentials");
 
@@ -48,6 +47,14 @@ public class UserService {
         var result = repository.findById(id);
         if (result.isEmpty())
             throw new RuntimeException("User not found with id: " + id);
+
+        return result.get();
+    }
+
+    public User getUserByEmail(String email) {
+        var result = repository.findByEmail(email);
+        if (result.isEmpty())
+            throw new RuntimeException("User not found with email: " + email);
 
         return result.get();
     }

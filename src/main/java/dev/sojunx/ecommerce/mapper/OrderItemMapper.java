@@ -14,6 +14,7 @@ public class OrderItemMapper {
                 .quantity(item.getQuantity())
                 .price(item.getPrice())
                 .total(item.getTotal())
+                .isReviewed(item.isReviewed())
                 .build();
     }
 }

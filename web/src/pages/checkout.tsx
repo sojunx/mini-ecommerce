@@ -29,9 +29,7 @@ const CheckoutPage = () => {
     setIsLoading(true);
 
     try {
-      const resolvedEmail = user?.email || email;
       const orderData = {
-        email: resolvedEmail,
         items: cart.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -47,7 +45,6 @@ const CheckoutPage = () => {
       navigate(`/orders/${successOrderId}/success`, {
         state: {
           orderId,
-          email: resolvedEmail,
           items: itemsSnapshot,
           total: totalSnapshot,
         },

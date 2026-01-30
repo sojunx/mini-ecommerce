@@ -1,46 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import type { Order, OrderItem } from "@/lib/types";
 import { Check } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router";
-
-type OrderItem = {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-};
-
-type OrderSuccessState = {
-  orderId?: string;
-  email?: string;
-  items?: OrderItem[];
-  total?: number;
-};
+import { Link, useLoaderData } from "react-router";
 
 const OrderSuccessPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const params = useParams();
-  const state = (location.state || {}) as OrderSuccessState;
+  const { order, items } = useLoaderData<{
+    order: Order;
+    items: OrderItem[];
+  }>();
 
-  const items = state.items || [];
-  const total = state.total ?? 0;
-  const orderId = state.orderId || params.id || "—";
-
-  if (items.length === 0) {
-    return (
-      <div className="container mx-auto px-6 py-16">
-        <div className="max-w-md mx-auto text-center bg-muted/40 border border-border rounded-2xl p-10">
-          <h1 className="text-2xl font-semibold mb-3">Order not found</h1>
-          <p className="text-muted-foreground mb-6">
-            We couldn’t find your order details. Please continue shopping.
-          </p>
-          <Button onClick={() => navigate("/shop")}>Go to Shop</Button>
-        </div>
-      </div>
-    );
-  }
+  const order_num = order.id.slice(0, 8).toUpperCase();
 
   return (
     <div className="container mx-auto px-6 py-16">
@@ -55,7 +25,7 @@ const OrderSuccessPage = () => {
           We’ve received your order will ship in 5–7 business days.
         </p>
         <p className="text-sm text-muted-foreground mt-2">
-          Your order number is <span className="font-medium">{orderId}</span>
+          Your order number is <span className="font-medium">#{order_num}</span>
         </p>
 
         <div className="mt-8 mx-auto max-w-md text-left bg-muted/30 border border-border rounded-2xl p-6">
@@ -65,7 +35,7 @@ const OrderSuccessPage = () => {
               <div key={item.id} className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-md overflow-hidden bg-muted">
                   <img
-                    src={item.image}
+                    src={"/product.jpg"}
                     alt={item.name}
                     className="w-full h-full object-cover"
                     draggable={false}
@@ -76,7 +46,7 @@ const OrderSuccessPage = () => {
                     {item.name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Qty {item.quantity}
+                    Quantity: {item.quantity}
                   </p>
                 </div>
                 <p className="text-sm font-medium">
@@ -89,18 +59,17 @@ const OrderSuccessPage = () => {
           <Separator className="my-5" />
           <div className="flex items-center justify-between text-sm font-semibold">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${order.total.toFixed(2)}</span>
           </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button onClick={() => navigate("/shop")}>Back to Shop</Button>
-          <Button
-            variant="secondary"
-            onClick={() => navigate(`/orders/${orderId}`)}
-            disabled={!orderId || orderId === "—"}
-          >
-            View Order
+          <Button asChild>
+            <Link to="/shop">Back to Shop</Link>
+          </Button>
+
+          <Button variant="secondary" asChild>
+            <Link to={`/orders/${order.id}`}>View Order</Link>
           </Button>
         </div>
       </div>
