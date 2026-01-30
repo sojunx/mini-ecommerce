@@ -31,7 +31,14 @@ const OrderProductRating = ({ order, item }: OrderProductRatingProps) => {
 
     const formData = new FormData(e.currentTarget);
     const rating = formData.get("rating");
-    const comment = formData.get("comment");
+    const commentValue = formData.get("comment");
+
+    const comment = typeof commentValue === "string" ? commentValue.trim() : "";
+
+    if (!comment) {
+      alert("Comment cannot be empty!");
+      return;
+    }
 
     const payload = {
       rating,
