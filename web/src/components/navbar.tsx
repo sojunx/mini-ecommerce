@@ -1,12 +1,11 @@
+import { AccountButton } from "@/components/account-button";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
-import { ShoppingBag, User } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   const { cart } = useCart();
-  const { user } = useAuth();
 
   const navItemClass =
     "relative px-1 py-1 font-medium after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-black after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100";
@@ -46,18 +45,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {!user && (
-            <Button asChild variant="outline" size="sm">
-              <Link to="/login" className="flex items-center gap-2">
-                <User size={18} />
-                Login
-              </Link>
-            </Button>
-          )}
-
-          {user && (
-            <span className="text-sm font-medium">Hello, {user.name}</span>
-          )}
+          <AccountButton />
 
           <Button asChild variant="ghost" className="relative">
             <Link to="/cart" aria-label="Open shopping bag">

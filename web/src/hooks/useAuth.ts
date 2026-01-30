@@ -5,6 +5,7 @@ interface AuthContextType {
   user: User | null;
   login: (e: FormEvent<HTMLFormElement>) => Promise<void>;
   register: (e: FormEvent<HTMLFormElement>) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

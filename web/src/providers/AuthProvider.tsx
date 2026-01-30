@@ -45,8 +45,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const logout = async () => {
+    await http.post("/api/users/logout");
+    setUser(null);
+    window.location.href = "/";
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

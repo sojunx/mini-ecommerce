@@ -50,15 +50,12 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        log.info("Authenticating user");
         final Optional<Cookie> cookie = extractCookie(req, "session_id");
         if (cookie.isEmpty()) {
-            log.info("No cookie found");
             chain.doFilter(req, res);
             return;
         }
 
-        log.info("Cookie found: {}", cookie.get().getValue());
         try {
             var session_id = cookie.get().getValue();
             if (session_id.isBlank()) throw new RuntimeException("Invalid session id");

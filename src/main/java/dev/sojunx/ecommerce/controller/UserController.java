@@ -45,7 +45,7 @@ public class UserController {
     ResponseEntity<ApiResponse> logout(@AuthenticationPrincipal UserDetails userDetails, HttpServletResponse httpResponse) {
         service.logout(userDetails.getUsername());
 
-        var cookie = ResponseCookie.from("session_id", "");
+        var cookie = ResponseCookie.from("session_id", "").path("/").httpOnly(true);
         httpResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.build().toString());
 
         var res = ApiResponse.success("Success");

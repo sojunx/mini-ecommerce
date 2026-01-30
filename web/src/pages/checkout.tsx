@@ -14,9 +14,6 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
-  const userId =
-    typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
-  const isAnonymous = !userId;
 
   useEffect(() => {
     if (user?.email) {
@@ -93,7 +90,7 @@ const CheckoutPage = () => {
           <div>
             <h2 className="text-lg font-medium mb-4">Contact Information</h2>
             <div className="space-y-4">
-              {isAnonymous ? (
+              {user ? (
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input
