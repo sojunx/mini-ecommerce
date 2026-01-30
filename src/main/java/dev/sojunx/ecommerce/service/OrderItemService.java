@@ -2,7 +2,9 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.OrderItem;
 import dev.sojunx.ecommerce.dto.request.OrderItemRequest;
+import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.repository.OrderItemRepository;
+import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,13 @@ import java.util.UUID;
 public class OrderItemService {
     private final OrderItemRepository repository;
     private final ProductService productService;
+    private final ReviewRepository reviewRepository;
 
     public void saveItem(OrderItem item) {
         repository.save(item);
     }
 
-    public void createOrderItem(OrderItemRequest request, UUID orderId) {
+    public void createOrderItem(OrderItemRequest request, UUID orderId, UUID userId) {
         var product = productService.getProductById(request.getProductId());
 
         var item = new OrderItem();
@@ -28,6 +31,11 @@ public class OrderItemService {
         item.setOrderId(orderId);
         item.setQuantity(request.getQuantity());
         item.setPrice(product.getPrice());
+
+        // Check if user already reviewed this product
+        // NOTES: Some issue happens in some cases
+        boolean isReviewed = reviewRepository.existsByUserIdAndProductId(userId, product.getId());
+        item.setReviewed(isReviewed);
 
         repository.save(item);
     }
@@ -39,7 +47,7 @@ public class OrderItemService {
     public OrderItem getItemByOrderIdAndProductId(UUID orderId, UUID productId) {
         var result = repository.findByOrderIdAndProductId(orderId, productId);
         if (result.isEmpty())
-            throw new RuntimeException("Order item not found with order id: " + orderId + " and product id: " + productId);
+            throw new NotFoundException("Order item not found");
 
         return result.get();
     }

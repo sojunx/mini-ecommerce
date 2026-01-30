@@ -1,6 +1,7 @@
 package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Product;
+import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,12 @@ public class ProductService {
     public List<Product> getProducts() {
         return repository.findAll();
     }
-    
+
     @Transactional(readOnly = true)
     public Product getProductById(UUID id) {
         var result = repository.findById(id);
         if (result.isEmpty())
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new NotFoundException("Product not found");
 
         return result.get();
     }

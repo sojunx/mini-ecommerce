@@ -25,4 +25,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     void deleteByIdAndUserId(UUID id, UUID userId);
 
     void deleteByIdAndEmail(UUID id, String email);
+
+    boolean existsByUserIdAndProductId(UUID userId, UUID productId);
 }

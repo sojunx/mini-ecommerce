@@ -6,6 +6,7 @@ import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.dto.response.ReviewStats;
+import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class ReviewService {
     public List<Review> getReviews(UUID id) {
         return repository.findAllByProductId(id);
     }
-    
+
     @Transactional
     public Review createReview(ReviewRequest request, User user) {
         var order = orderService.getOrderById(request.getOrderId());
@@ -70,7 +71,7 @@ public class ReviewService {
     public Review updateReview(UUID id, UpdateReviewRequest request) {
         var result = repository.findById(id);
         if (result.isEmpty())
-            throw new RuntimeException("Review not found with id: " + id);
+            throw new NotFoundException("Review not found");
 
         var review = result.get();
         // TODO: validate user
