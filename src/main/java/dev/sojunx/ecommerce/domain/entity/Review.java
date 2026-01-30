@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "order_id"}))
+@Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "product_id"}))
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,12 +21,13 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false, name = "user_id")
     private UUID userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "product_id")
     private UUID productId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "order_id")
     private UUID orderId;
 
     @Column(nullable = false)
