@@ -14,10 +14,12 @@ import { Link, useLoaderData } from "react-router";
 
 const ProductPage = () => {
   const { product, reviews, review_stats } = useLoaderData<ProductDetails>();
+
   const { addToCart } = useCart();
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -70,40 +72,50 @@ const ProductPage = () => {
         </div>
 
         {/* Product Info Section */}
-        <div className="flex flex-col gap-6">
-          <div className="space-y-3">
-            <Badge variant="secondary" className="w-fit">
-              New Arrival
+        <div className="flex flex-col h-full justify-between gap-8">
+          {/* Product info */}
+          <div className="space-y-5">
+            <Badge variant="secondary" className="w-fit px-3 py-1 text-xs">
+              ✨ New Arrival
             </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight">
+
+            <h1 className="text-4xl font-bold leading-tight tracking-tight">
               {product.name}
             </h1>
-            <div className="flex items-end gap-3">
-              <p className="text-3xl font-semibold">
+
+            <div className="flex items-center gap-4">
+              <p className="text-3xl font-semibold text-primary">
                 ${product.price.toFixed(2)}
               </p>
               <span className="text-sm text-muted-foreground">
-                Free shipping
+                FREE SHIPPING
               </span>
             </div>
           </div>
 
-          <div className="bg-muted/40 border border-border rounded-2xl p-5">
-            <h2 className="text-sm font-medium mb-2 text-muted-foreground">
+          <div className="rounded-2xl border bg-muted/30 p-6">
+            <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
               Description
             </h2>
-            <p className="text-base leading-relaxed">{product.description}</p>
+            <p className="text-base leading-relaxed text-foreground/90">
+              {product.description}
+            </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
               size="lg"
-              className="w-full"
+              className="w-full text-base font-semibold"
               onClick={() => addToCart(product)}
             >
               Add to Cart
             </Button>
-            <Button size="lg" variant="outline" className="w-full">
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full text-base font-semibold"
+            >
               Buy Now
             </Button>
           </div>
@@ -170,13 +182,39 @@ const ProductPage = () => {
 
           <form
             onSubmit={handleReviewSubmit}
-            className="bg-muted/40 border border-border rounded-xl p-6 mt-6 space-y-4"
+            className="mt-8 space-y-5 rounded-2xl border bg-muted/30 p-6"
           >
             <div>
-              <h2 className="text-lg font-medium">Write a review</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Use your order ID to submit a review.
+              <h2 className="text-lg font-semibold">Write a review</h2>
+              <p className="text-sm text-muted-foreground">
+                Please enter your order information to submit a review.
               </p>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((star) => {
+                const isActive = star <= (hoverRating || rating);
+
+                return (
+                  <Star
+                    key={star}
+                    className={`h-6 w-6 cursor-pointer transition-colors ${
+                      isActive
+                        ? "fill-yellow-500 text-yellow-500"
+                        : "text-gray-300"
+                    }`}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                );
+              })}
+
+              {(hoverRating || rating) > 0 && (
+                <span className="ml-2 text-sm text-muted-foreground">
+                  {hoverRating || rating}/5
+                </span>
+              )}
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -186,10 +224,11 @@ const ProductPage = () => {
                   id="order-id"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
-                  placeholder="e.g. 12345"
+                  placeholder="e.g. #12345"
                   required
                 />
               </div>
+
               <div className="space-y-1">
                 <Label htmlFor="review-email">Email</Label>
                 <Input
@@ -203,59 +242,61 @@ const ProductPage = () => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-[160px_1fr] gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="rating">Rating</Label>
-                <Input
-                  id="rating"
-                  type="number"
-                  min={1}
-                  max={5}
-                  value={rating}
-                  onChange={(e) => setRating(Number(e.target.value))}
-                  required
-                />
-              </div>
+            <div>
               <div className="space-y-1">
                 <Label htmlFor="comment">Comment</Label>
                 <Textarea
                   id="comment"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Write your review..."
+                  placeholder="Share your experience…"
                   rows={4}
                   required
                 />
               </div>
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="w-fit">
               {isSubmitting ? "Submitting..." : "Submit Review"}
             </Button>
           </form>
 
-          <div className="space-y-4 mt-6">
+          <div className="mt-6 space-y-4">
             {reviews.map((review) => (
               <div
-                className="bg-muted outline p-4 rounded-lg space-y-2"
                 key={review.id}
+                className="rounded-xl border bg-background p-5 space-y-3"
               >
-                <div>
-                  {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="star" />
+                {/* Rating */}
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-4 w-4 ${
+                        star <= review.rating
+                          ? "fill-yellow-500 text-yellow-500"
+                          : "text-gray-300"
+                      }`}
+                    />
                   ))}
                 </div>
 
-                <p className="text-sm">{review.comment}</p>
+                {/* Comment */}
+                <p className="text-sm leading-relaxed text-foreground/90">
+                  {review.comment}
+                </p>
 
-                <div className="flex items-center gap-3">
-                  <Avatar className="outline">
+                {/* User info */}
+                <div className="flex items-center gap-3 pt-2">
+                  <Avatar className="h-9 w-9 border">
                     <AvatarImage src="/avatar2.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>
+                      {review.email.charAt(0).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
 
                   <div>
-                    <p className="text-sm">{review.email}</p>
+                    <p className="text-sm font-medium">{review.email}</p>
                     <p className="text-xs text-muted-foreground">
                       {formatDate(review.created_at)}
                     </p>
