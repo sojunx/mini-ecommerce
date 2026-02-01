@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 import LoginPage from "@/pages/Login";
 import OrderPage from "@/pages/Order";
 import ProductPage from "@/pages/Product";
+import ProfilePage from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
 import ShopPage from "@/pages/Shop";
 import { createBrowserRouter } from "react-router";
@@ -22,6 +23,11 @@ const router = createBrowserRouter([
         loader: async () => {
           return await http.get("/api/products").then((res) => res.data);
         },
+      },
+
+      {
+        path: "profile",
+        Component: ProfilePage,
       },
 
       {
