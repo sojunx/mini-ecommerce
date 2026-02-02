@@ -10,10 +10,11 @@ import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,8 +26,8 @@ public class ReviewService {
     private final ReviewMapper mapper;
 
     @Transactional(readOnly = true)
-    public List<Review> getReviews(UUID id) {
-        return repository.findAllByProductId(id);
+    public Page<Review> findAll(UUID id, Pageable pageable) {
+        return repository.findAllByProductId(id, pageable);
     }
 
     @Transactional
