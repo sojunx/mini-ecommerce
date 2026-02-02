@@ -50,6 +50,7 @@ const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
 
   const totalPages = reviews.page?.total_pages ?? 0;
   const pages = getVisiblePages(currentPage, totalPages);
+  const hasAnyReviews = stats.total > 0;
 
   const buildPageHref = (page: number) => {
     const params = new URLSearchParams(searchParams);
@@ -77,13 +78,13 @@ const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
     <div className="space-y-4">
       <h1 className="text-2xl font-serif">Reviews</h1>
 
-      {reviews.content?.length === 0 && (
+      {!hasAnyReviews && (
         <p className="text-muted-foreground font-serif">
           There are no reviews for this product yet.
         </p>
       )}
 
-      {reviews.content?.length > 0 && (
+      {hasAnyReviews && (
         <div>
           <div className="grid gap-6 md:grid-cols-[220px_1fr] items-center outline rounded-xl p-6">
             <div className="flex flex-col items-center text-center space-y-3">
@@ -161,82 +162,90 @@ const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
               </button>
             </div>
 
-            {reviews.content.map((review) => (
-              <div
-                key={review.id}
-                className="rounded-xl border bg-background p-5 space-y-3"
-              >
-                {/* Rating */}
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <= review.rating
-                          ? "fill-yellow-500 text-yellow-500"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
+            {reviews.content.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No reviews match this filter.
+              </p>
+            ) : (
+              reviews.content.map((review) => (
+                <div
+                  key={review.id}
+                  className="rounded-xl border bg-background p-5 space-y-3"
+                >
+                  {/* Rating */}
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${
+                          star <= review.rating
+                            ? "fill-yellow-500 text-yellow-500"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
 
-                {/* Comment */}
-                <p className="text-sm leading-relaxed text-foreground/90">
-                  {review.comment}
-                </p>
+                  {/* Comment */}
+                  <p className="text-sm leading-relaxed text-foreground/90">
+                    {review.comment}
+                  </p>
 
-                {/* User info */}
-                <div className="flex items-center gap-3 pt-2">
-                  <Avatar className="h-9 w-9 border">
-                    <AvatarImage src="/avatar2.png" />
-                    <AvatarFallback>
-                      {review.email.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                  {/* User info */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <Avatar className="h-9 w-9 border">
+                      <AvatarImage src="/avatar2.png" />
+                      <AvatarFallback>
+                        {review.email.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div>
-                    <p className="text-sm font-medium">{review.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(review.created_at)}
-                    </p>
+                    <div>
+                      <p className="text-sm font-medium">{review.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(review.created_at)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
 
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    aria-disabled={currentPage === 0}
-                    href={buildPageHref(Math.max(currentPage - 1, 0))}
-                  />
-                </PaginationItem>
-                {pages.map((p) => (
-                  <PaginationItem key={p}>
-                    <PaginationLink
-                      isActive={p === currentPage}
-                      href={buildPageHref(p)}
-                    >
-                      {p + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-                {totalPages > 3 && currentPage < totalPages - 1 && (
+            {totalPages > 1 && reviews.content.length > 0 && (
+              <Pagination>
+                <PaginationContent>
                   <PaginationItem>
-                    <PaginationEllipsis />
+                    <PaginationPrevious
+                      aria-disabled={currentPage === 0}
+                      href={buildPageHref(Math.max(currentPage - 1, 0))}
+                    />
                   </PaginationItem>
-                )}
-                <PaginationItem>
-                  <PaginationNext
-                    aria-disabled={currentPage === totalPages - 1}
-                    href={buildPageHref(
-                      Math.min(currentPage + 1, totalPages - 1),
-                    )}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                  {pages.map((p) => (
+                    <PaginationItem key={p}>
+                      <PaginationLink
+                        isActive={p === currentPage}
+                        href={buildPageHref(p)}
+                      >
+                        {p + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  {totalPages > 3 && currentPage < totalPages - 1 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <PaginationNext
+                      aria-disabled={currentPage === totalPages - 1}
+                      href={buildPageHref(
+                        Math.min(currentPage + 1, totalPages - 1),
+                      )}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         </div>
       )}
