@@ -2,7 +2,6 @@ package dev.sojunx.ecommerce.controller;
 
 import dev.sojunx.ecommerce.config.CustomUserDetails;
 import dev.sojunx.ecommerce.dto.ApiResponse;
-import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
@@ -50,6 +49,14 @@ public class ReviewController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping
+    ResponseEntity<ApiResponse> getAllReviews(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        var reviews = service.findAllByUserId(userDetails.user().getId());
+
+        var res = ApiResponse.success("Success", reviews.stream().map(mapper::toDto).toList());
+        return ResponseEntity.ok(res);
+    }
+
     @PostMapping
     ResponseEntity<ApiResponse> createReview(@RequestBody ReviewRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
         var review = service.createReview(request, userDetails.user());
@@ -59,16 +66,16 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id, @RequestBody UpdateReviewRequest request) {
-        var review = service.updateReview(id, request);
+    ResponseEntity<ApiResponse> updateReview(@PathVariable UUID id, @RequestBody UpdateReviewRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        var review = service.updateReview(id, request, userDetails.user().getId());
 
         var res = ApiResponse.success("Success", mapper.toDto(review));
         return ResponseEntity.ok(res);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @RequestBody DeleteReviewRequest request) {
-        service.deleteReview(id, request);
+    ResponseEntity<ApiResponse> deleteReview(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        service.deleteReview(id, userDetails.user().getId());
 
         var res = ApiResponse.success("Success");
         return ResponseEntity.ok(res);

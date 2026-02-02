@@ -16,7 +16,7 @@ public class CookieUtil {
         return ResponseCookie.from(name, data)
                 .path("/")
                 .httpOnly(true)
-                .maxAge(900)
+//                .maxAge(900)
                 .build()
                 .toString();
     }

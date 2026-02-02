@@ -1,7 +1,5 @@
 import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileInfo from "@/components/profile/ProfileInfo";
-import ProfileStats from "@/components/profile/ProfileStats";
-import { Separator } from "@/components/ui/separator";
 
 const ProfileHeader = () => {
   return (
@@ -11,10 +9,6 @@ const ProfileHeader = () => {
 
         <ProfileActions />
       </div>
-
-      <Separator className="my-6" />
-
-      <ProfileStats />
     </section>
   );
 };

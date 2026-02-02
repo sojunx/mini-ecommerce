@@ -8,6 +8,7 @@ import OrderPage from "@/pages/Order";
 import ProductPage from "@/pages/Product";
 import ProfilePage from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
+import ReviewEditPage from "@/pages/ReviewEdit";
 import ShopPage from "@/pages/Shop";
 import ProductService from "@/services/product.service";
 import { createBrowserRouter } from "react-router";
@@ -57,6 +58,13 @@ const router = createBrowserRouter([
       {
         path: "profile",
         Component: ProfilePage,
+        loader: async () => {
+          return {
+            orders: await http.get("/api/orders").then((res) => res.data),
+
+            reviews: await http.get("/api/reviews").then((res) => res.data),
+          };
+        },
       },
 
       {
@@ -98,6 +106,11 @@ const router = createBrowserRouter([
               .then((res) => res.data),
           };
         },
+      },
+
+      {
+        path: "reviews/edit/:id",
+        Component: ReviewEditPage,
       },
 
       {

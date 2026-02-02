@@ -10,6 +10,7 @@ import java.util.UUID;
 @Builder
 public class ReviewDto {
     private UUID id;
+    private UUID productId;
     private String email;
     private String comment;
     private Integer rating;

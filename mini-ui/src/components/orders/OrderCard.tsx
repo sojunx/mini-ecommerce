@@ -1,13 +1,21 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { formatDate, getOrderNum } from "@/lib/utils";
+import type { Order } from "@/types/order";
+import { Link } from "react-router";
 
-const OrderCard = ({ order }: { order: any }) => {
+const OrderCard = ({ order }: { order: Order }) => {
   return (
-    <div key={order.id} className="rounded-2xl border bg-background p-5">
+    <Link
+      to={`/orders/${order.id}`}
+      key={order.id}
+      className="rounded-2xl border bg-background p-5 w-md max-md:w-full"
+    >
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-lg font-medium">{order.id}</h3>
+        <div className="space-y-2 w-full">
+          <div className="flex w-full items-center justify-between">
+            <h3 className="text-lg font-medium">
+              ORDER - #{getOrderNum(order.id)}
+            </h3>
             <Badge
               variant={order.status === "Delivered" ? "secondary" : "outline"}
             >
@@ -15,19 +23,12 @@ const OrderCard = ({ order }: { order: any }) => {
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            {order.date} · {order.items} items
+            {formatDate(order.created_at)}
           </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-          <p className="text-lg font-semibold">{order.total}</p>
-          <Button size="sm" variant="outline">
-            View details
-          </Button>
-          <Button size="sm">Track order</Button>
+          <p className="text-lg font-semibold">Total: ${order.total}</p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

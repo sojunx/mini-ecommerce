@@ -2,47 +2,25 @@ import OrderCard from "@/components/orders/OrderCard";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ReviewCard from "@/components/reviews/ReviewCard";
 import { Button } from "@/components/ui/button";
-
-const orders = [
-  {
-    id: "ORD-1024",
-    date: "Jan 18, 2026",
-    status: "Delivered",
-    total: "$124.00",
-    items: 3,
-  },
-  {
-    id: "ORD-1017",
-    date: "Jan 03, 2026",
-    status: "Processing",
-    total: "$86.50",
-    items: 2,
-  },
-  {
-    id: "ORD-1002",
-    date: "Dec 22, 2025",
-    status: "Delivered",
-    total: "$214.00",
-    items: 4,
-  },
-];
-
-const reviews = [
-  {
-    product: "Everyday Canvas Tote",
-    rating: 5,
-    date: "Jan 14, 2026",
-    comment: "Sturdy and stylish. Perfect size for daily essentials.",
-  },
-  {
-    product: "Soft Knit Hoodie",
-    rating: 4,
-    date: "Jan 02, 2026",
-    comment: "Very cozy. The fit is relaxed and the fabric feels premium.",
-  },
-];
+import { useAuth } from "@/hooks/useAuth";
+import type { Order } from "@/types/order";
+import type { Review } from "@/types/review";
+import { useEffect } from "react";
+import { useLoaderData, useNavigate } from "react-router";
 
 const ProfilePage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [navigate, user]);
+
+  const { orders, reviews } = useLoaderData<{
+    orders: Order[];
+    reviews: Review[];
+  }>();
+
   return (
     <div className="space-y-12">
       <ProfileHeader />
@@ -78,7 +56,7 @@ const ProfilePage = () => {
 
         <div className="grid gap-4 md:grid-cols-2">
           {reviews.map((review) => (
-            <ReviewCard key={review.product} review={review} />
+            <ReviewCard key={review.id} review={review} />
           ))}
         </div>
       </section>
