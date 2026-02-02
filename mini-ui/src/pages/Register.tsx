@@ -16,9 +16,11 @@ const RegisterPage = () => {
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
-    const name = formData.get("name") as string;
+    const full_name = formData.get("full_name") as string;
+    const password = formData.get("password") as string;
+    const confirm_password = formData.get("confirm_password") as string;
 
-    await register({ email, name });
+    await register({ email, full_name, password, confirm_password });
   };
 
   return (
@@ -28,16 +30,16 @@ const RegisterPage = () => {
         onSubmit={handleSubmit}
       >
         <div>
-          <Label htmlFor="email">Name</Label>
+          <Label htmlFor="full_name">Full Name</Label>
           <Input
-            id="name"
-            name="name"
-            type="name"
+            id="full_name"
+            name="full_name"
+            type="text"
             required
-            placeholder="Your Name"
-            className="bg-white"
+            placeholder="Enter Your Full Name"
           />
         </div>
+
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -45,8 +47,29 @@ const RegisterPage = () => {
             name="email"
             type="email"
             required
-            placeholder="you@example.com"
-            className="bg-white"
+            placeholder="Enter Your Email"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            required
+            placeholder="Enter Your Password"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="confirm_password">Confirm Password</Label>
+          <Input
+            id="confirm_password"
+            name="confirm_password"
+            type="password"
+            required
+            placeholder="Enter Your Confirm Password"
           />
         </div>
 

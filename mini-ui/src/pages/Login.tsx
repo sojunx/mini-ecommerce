@@ -17,8 +17,9 @@ const LoginPage = () => {
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    await login({ email });
+    await login({ email, password });
   };
 
   return (
@@ -34,8 +35,18 @@ const LoginPage = () => {
             name="email"
             type="email"
             required
-            placeholder="you@example.com"
-            className="bg-white"
+            placeholder="Enter your email"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            required
+            placeholder="Enter your password"
           />
         </div>
 
