@@ -4,3 +4,10 @@ export interface ApiResponse<T = unknown> {
   message: string;
   success: boolean;
 }
+
+export interface Pageable {
+  size: number;
+  number: number;
+  total_elements: number;
+  total_pages: number;
+}

@@ -3,6 +3,7 @@ import type { User } from "@/types/user";
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
+  initialized: boolean;
   login: (request: LoginRequest) => Promise<string | number | void>;
   logout: () => Promise<void>;
   register: (request: RegisterRequest) => Promise<string | number | void>;

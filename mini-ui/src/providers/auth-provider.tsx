@@ -8,18 +8,38 @@ import { toast } from "sonner";
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   useEffect(() => {
-    AuthService.getCurrentUser().then((res) => {
-      setUser(res.data ?? null);
-      setLoading(false);
-    });
+    const getData = async () => {
+      try {
+        const data = await AuthService.getCurrentUser();
+
+        setUser(data);
+      } catch {
+        setUser(null);
+      } finally {
+        setInitialized(true);
+        setLoading(false);
+      }
+    };
+
+    getData();
   }, []);
 
-  const login = async (request: LoginRequest) =>
-    await AuthService.login(request)
-      .then(() => window.location.reload())
-      .catch((error: unknown) => toast.error((error as Error).message));
+  const login = async (request: LoginRequest) => {
+    setLoading(true);
+    try {
+      await AuthService.login(request);
+
+      const user = await AuthService.getCurrentUser();
+      setUser(user);
+    } catch (error: unknown) {
+      toast.error((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logout = async () =>
     await AuthService.logout().then(() => setUser(null));
@@ -30,7 +50,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       .catch((error: unknown) => toast.error((error as Error).message));
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, loading, initialized, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );

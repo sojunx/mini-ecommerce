@@ -16,6 +16,8 @@ import java.util.UUID;
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Page<Review> findAllByProductId(UUID productId, Pageable pageable);
 
+    Page<Review> findAllByProductIdAndRating(UUID productId, Integer rating, Pageable pageable);
+
     Integer countReviewsByProductId(UUID productId);
 
     @Query("SELECT COALESCE(AVG(r.rating), 0.0) FROM Review r WHERE r.productId = :productId")
@@ -29,4 +31,5 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     void deleteByIdAndEmail(UUID id, String email);
 
     boolean existsByUserIdAndProductId(UUID userId, UUID productId);
+
 }

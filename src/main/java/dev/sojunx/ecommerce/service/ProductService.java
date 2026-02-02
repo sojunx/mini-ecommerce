@@ -18,11 +18,6 @@ public class ProductService {
     private final ProductRepository repository;
 
     @Transactional(readOnly = true)
-    public List<Product> getProducts() {
-        return repository.findAll();
-    }
-
-    @Transactional(readOnly = true)
     public Page<Product> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
@@ -34,5 +29,9 @@ public class ProductService {
             throw new NotFoundException("Product not found");
 
         return result.get();
+    }
+
+    public List<Product> searchByName(String name) {
+        return repository.searchByName(name);
     }
 }

@@ -29,13 +29,14 @@ public class ReviewController {
     ResponseEntity<ApiResponse> getAllReviews(
             @PathVariable UUID product_id,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "false") boolean ascending
+            @RequestParam(defaultValue = "false") boolean ascending,
+            @RequestParam(required = false) Integer rating
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        var reviews = service.findAll(product_id, pageable);
+        var reviews = service.findAll(product_id, rating, pageable);
 
         var res = ApiResponse.success("Success", reviews.map(mapper::toDto));
         return ResponseEntity.ok(res);

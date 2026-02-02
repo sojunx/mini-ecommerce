@@ -41,4 +41,12 @@ public class ProductController {
         var res = ApiResponse.success("Success", product);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/search")
+    ResponseEntity<ApiResponse> searchProduct(@RequestParam String name) {
+        var products = service.searchByName(name);
+
+        var res = ApiResponse.success("Success", products);
+        return ResponseEntity.ok(res);
+    }
 }

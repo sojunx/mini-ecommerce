@@ -1,5 +1,5 @@
 import http from "@/lib/http";
-import RootLayout from "@/pages";
+import { AuthLayout, RootLayout } from "@/pages";
 import AboutPage from "@/pages/About";
 import CartPage from "@/pages/Cart";
 import Home from "@/pages/Home";
@@ -9,6 +9,7 @@ import ProductPage from "@/pages/Product";
 import ProfilePage from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
 import ShopPage from "@/pages/Shop";
+import ProductService from "@/services/product.service";
 import { createBrowserRouter } from "react-router";
 
 const router = createBrowserRouter([
@@ -20,8 +21,36 @@ const router = createBrowserRouter([
       {
         path: "shop",
         Component: ShopPage,
-        loader: async () => {
-          return await http.get("/api/products").then((res) => res.data);
+        loader: async ({ request }) => {
+          const url = new URL(request.url);
+          const page = Number(url.searchParams.get("page") ?? 0);
+          const name = url.searchParams.get("name")?.trim();
+
+          if (name) {
+            const result = await ProductService.searchProducts(name);
+
+            if (result && "content" in result && "page" in result) {
+              return result;
+            }
+
+            const list = Array.isArray(result)
+              ? result
+              : Array.isArray(result?.data)
+                ? result.data
+                : [];
+
+            return {
+              content: list,
+              page: {
+                size: list.length,
+                number: 0,
+                total_elements: list.length,
+                total_pages: 1,
+              },
+            };
+          }
+
+          return await ProductService.getAllProducts(page);
         },
       },
 
@@ -33,13 +62,20 @@ const router = createBrowserRouter([
       {
         path: "product/:id",
         Component: ProductPage,
-        loader: async ({ params }) => {
+        loader: async ({ params, request }) => {
+          const url = new URL(request.url);
+          const page = Number(url.searchParams.get("page") ?? 0);
+          const rating = url.searchParams.get("rating");
+          const ratingQuery = rating ? `&rating=${rating}` : "";
+
           return {
             product: await http
               .get(`/api/products/${params.id}`)
               .then((res) => res.data),
             reviews: await http
-              .get(`/api/reviews/${params.id}`)
+              .get(
+                `/api/reviews/${params.id}?page=${page}&size=5${ratingQuery}`,
+              )
               .then((res) => res.data),
             stats: await http
               .get(`/api/reviews/${params.id}/stats`)
@@ -73,7 +109,13 @@ const router = createBrowserRouter([
         path: "cart",
         Component: CartPage,
       },
+    ],
+  },
 
+  {
+    path: "/",
+    Component: AuthLayout,
+    children: [
       {
         path: "login",
         Component: LoginPage,

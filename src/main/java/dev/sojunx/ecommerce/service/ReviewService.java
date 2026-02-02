@@ -26,7 +26,10 @@ public class ReviewService {
     private final ReviewMapper mapper;
 
     @Transactional(readOnly = true)
-    public Page<Review> findAll(UUID id, Pageable pageable) {
+    public Page<Review> findAll(UUID id, Integer rating, Pageable pageable) {
+        if (rating != null)
+            return repository.findAllByProductIdAndRating(id, rating, pageable);
+
         return repository.findAllByProductId(id, pageable);
     }
 
