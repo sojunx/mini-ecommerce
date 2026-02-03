@@ -17,7 +17,7 @@ services:
       retries: 5
 
   web:
-    build: ./web
+    build: ./mini-ui
     container_name: web
     ports:
       - "5173:80"
@@ -33,11 +33,6 @@ services:
       DATASOURCE_URL: jdbc:postgresql://postgres:5432/mini_ecommerce
       DATASOURCE_USERNAME: mini_ecommerce
       DATASOURCE_PASSWORD: password
-    healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     depends_on:
       postgres:
         condition: service_healthy

@@ -7,7 +7,7 @@ const ProfileHeader = () => {
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <ProfileInfo />
 
-        <ProfileActions />
+//         <ProfileActions />
       </div>
     </section>
   );

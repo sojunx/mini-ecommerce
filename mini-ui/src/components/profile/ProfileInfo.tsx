@@ -6,14 +6,14 @@ const ProfileInfo = () => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-      <Avatar size="lg">
+      <Avatar size="lg" className="outline">
         <AvatarImage src="/avatar.png" alt="User avatar" />
         <AvatarFallback>JS</AvatarFallback>
       </Avatar>
 
       <div className="space-y-2">
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-          Welcome back, {user?.name}
+          Welcome back, {user?.full_name}
         </h1>
         <p className="text-sm text-muted-foreground">
           {user?.email} · Joined Aug 2024
