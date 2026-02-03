@@ -100,7 +100,7 @@ public class ReviewService {
             throw new NotFoundException("Review not found");
 
         var review = result.get();
-        if (review.getUserId() != userId)
+        if (!review.getUserId().equals(userId))
             throw new RuntimeException("User not authorized to delete review");
 
         repository.deleteById(id);

@@ -1,13 +1,28 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import useData from "@/hooks/useData";
+import http from "@/lib/http";
 import { formatDate } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import type { Review } from "@/types/review";
-import { Link } from "react-router";
+import { Link, useRevalidator } from "react-router";
+import { toast } from "sonner";
 
 const ReviewCard = ({ review }: { review: Review }) => {
   const { data } = useData<Product>(`/api/products/${review.product_id}`);
+  const revalidator = useRevalidator();
+
+  const handleDelete = async () => {
+    try {
+      await http.delete(`/api/reviews/${review.id}`);
+
+      toast.success("Review deleted successfully.");
+      revalidator.revalidate();
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      toast.error("Failed to delete review.");
+    }
+  };
 
   return (
     <div
@@ -34,8 +49,8 @@ const ReviewCard = ({ review }: { review: Review }) => {
         <Button size="sm" variant="outline" asChild>
           <Link to={`/reviews/edit/${review.id}`}>Edit</Link>
         </Button>
-        <Button size="sm" variant="ghost" asChild>
-          <Link to={`/reviews/delete/${review.id}`}>Delete</Link>
+        <Button size="sm" variant="ghost" onClick={handleDelete}>
+          Delete
         </Button>
       </div>
     </div>
