@@ -3,6 +3,7 @@ package dev.sojunx.ecommerce.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -10,5 +11,6 @@ import java.util.UUID;
 public class UserDto {
     private UUID id;
     private String email;
-    private String name;
+    private String fullName;
+    private LocalDateTime createdAt;
 }

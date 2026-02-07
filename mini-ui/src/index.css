@@ -118,10 +118,10 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 select-none;
 
-    font-family: "Roboto Mono", monospace;
-    /* font-family: "Inter", sans-serif; */
+    /* font-family: "Roboto Mono", monospace; */
+    font-family: "Inter", sans-serif;
 
     -ms-overflow-style: none;
     scrollbar-width: none;

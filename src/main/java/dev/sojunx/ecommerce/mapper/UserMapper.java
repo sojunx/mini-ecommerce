@@ -10,7 +10,8 @@ public class UserMapper {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .name(user.getName())
+                .fullName(user.getFullName())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }

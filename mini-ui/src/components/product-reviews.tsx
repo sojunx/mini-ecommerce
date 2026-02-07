@@ -1,32 +1,90 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { formatDate } from "@/lib/utils";
+import type { Pageable } from "@/types";
 import type { Review, ReviewStats } from "@/types/review";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useSearchParams } from "react-router";
 
 interface ProductReviewsProps {
-  reviews: Review[];
+  reviews: {
+    content: Review[];
+    page: Pageable;
+  };
   stats: ReviewStats;
 }
 
 const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
-  const [rating, setRating] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page") ?? 0);
+  const ratingParam = searchParams.get("rating");
+  const selectedRating = ratingParam ? Number(ratingParam) : null;
+  const normalizedRating =
+    selectedRating !== null && !Number.isNaN(selectedRating)
+      ? selectedRating
+      : null;
 
-  const filteredReviews = rating
-    ? reviews.filter((review) => review.rating === rating)
-    : reviews;
+  function getVisiblePages(current: number, total: number) {
+    if (total <= 3) {
+      return Array.from({ length: total }, (_, i) => i);
+    }
+
+    if (current === 0) {
+      return [0, 1, 2];
+    }
+
+    if (current === total - 1) {
+      return [total - 3, total - 2, total - 1];
+    }
+
+    return [current - 1, current, current + 1];
+  }
+
+  const totalPages = reviews.page?.total_pages ?? 0;
+  const pages = getVisiblePages(currentPage, totalPages);
+  const hasAnyReviews = stats.total > 0;
+
+  const buildPageHref = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(page));
+    if (normalizedRating === null) {
+      params.delete("rating");
+    }
+    return `?${params.toString()}`;
+  };
+
+  const handleSelectRating = (value: number | null) => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set("page", "0");
+      if (value === null) {
+        params.delete("rating");
+      } else {
+        params.set("rating", String(value));
+      }
+      return params;
+    });
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <h1 className="text-2xl font-serif">Reviews</h1>
 
-      {reviews?.length === 0 && (
-        <p className="text-sm text-muted-foreground">
+      {!hasAnyReviews && (
+        <p className="text-muted-foreground font-serif">
           There are no reviews for this product yet.
         </p>
       )}
 
-      {reviews?.length > 0 && (
+      {hasAnyReviews && (
         <div>
           <div className="grid gap-6 md:grid-cols-[220px_1fr] items-center outline rounded-xl p-6">
             <div className="flex flex-col items-center text-center space-y-3">
@@ -88,8 +146,8 @@ const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
                     type="radio"
                     value={rating}
                     name="filter-rating"
-                    onClick={() => setRating(rating)}
-                    defaultChecked={rating === 5}
+                    onChange={() => handleSelectRating(rating)}
+                    checked={normalizedRating === rating}
                     className="peer sr-only"
                   />
                   <span className="text-amber-500">★</span>
@@ -97,55 +155,97 @@ const ProductReviews = ({ reviews, stats }: ProductReviewsProps) => {
                 </label>
               ))}
               <button
-                onClick={() => setRating(null)}
+                onClick={() => handleSelectRating(null)}
                 className="border px-4 rounded-md flex justify-center items-center bg-red-400 text-white cursor-pointer"
               >
                 <span>x</span>
               </button>
             </div>
 
-            {filteredReviews.map((review) => (
-              <div
-                key={review.id}
-                className="rounded-xl border bg-background p-5 space-y-3"
-              >
-                {/* Rating */}
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <= review.rating
-                          ? "fill-yellow-500 text-yellow-500"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
+            {reviews.content.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No reviews match this filter.
+              </p>
+            ) : (
+              reviews.content.map((review) => (
+                <div
+                  key={review.id}
+                  className="rounded-xl border bg-background p-5 space-y-3"
+                >
+                  {/* Rating */}
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${
+                          star <= review.rating
+                            ? "fill-yellow-500 text-yellow-500"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
 
-                {/* Comment */}
-                <p className="text-sm leading-relaxed text-foreground/90">
-                  {review.comment}
-                </p>
+                  {/* Comment */}
+                  <p className="text-sm leading-relaxed text-foreground/90">
+                    {review.comment}
+                  </p>
 
-                {/* User info */}
-                <div className="flex items-center gap-3 pt-2">
-                  <Avatar className="h-9 w-9 border">
-                    <AvatarImage src="/avatar2.png" />
-                    <AvatarFallback>
-                      {review.email.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                  {/* User info */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <Avatar className="h-9 w-9 border">
+                      <AvatarImage src="/avatar2.png" />
+                      <AvatarFallback>
+                        {review.email.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div>
-                    <p className="text-sm font-medium">{review.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(review.created_at)}
-                    </p>
+                    <div>
+                      <p className="text-sm font-medium">{review.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(review.created_at)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
+
+            {totalPages > 1 && reviews.content.length > 0 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      aria-disabled={currentPage === 0}
+                      href={buildPageHref(Math.max(currentPage - 1, 0))}
+                    />
+                  </PaginationItem>
+                  {pages.map((p) => (
+                    <PaginationItem key={p}>
+                      <PaginationLink
+                        isActive={p === currentPage}
+                        href={buildPageHref(p)}
+                      >
+                        {p + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  {totalPages > 3 && currentPage < totalPages - 1 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <PaginationNext
+                      aria-disabled={currentPage === totalPages - 1}
+                      href={buildPageHref(
+                        Math.min(currentPage + 1, totalPages - 1),
+                      )}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         </div>
       )}

@@ -1,12 +1,3 @@
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Separator } from "@/components/ui/separator";
-// import http from "@/lib/http";
-// import type { Order, OrderItem } from "@/types/order";
-// import type { FormEvent } from "react";
-// import { useMemo, useState } from "react";
-// import { useLoaderData } from "react-router";
-
 import OrderProductRating from "@/components/order-product-rating";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -14,47 +5,6 @@ import { getOrderNum } from "@/lib/utils";
 import type { Order, OrderItem } from "@/types/order";
 import { Package, ShoppingBasket } from "lucide-react";
 import { useLoaderData } from "react-router";
-
-// const OrderPage = () => {
-//   const { order, items } = useLoaderData<OrderPageData>();
-//   const defaultRating = 3;
-//   const [commentDrafts, setCommentDrafts] = useState<Record<number, string>>(
-//     {},
-//   );
-//   const [ratingsByItem, setRatingsByItem] = useState<Record<number, number>>(
-//     {},
-//   );
-
-//   const formattedTotal = useMemo(() => {
-//     return new Intl.NumberFormat("en-US", {
-//       style: "currency",
-//       currency: "USD",
-//     }).format(order.total);
-//   }, [order.total]);
-
-//   const handleSubmit = async (
-//     event: FormEvent<HTMLFormElement>,
-//     item: OrderItem,
-//   ) => {
-//     event.preventDefault();
-//     const formData = new FormData(event.currentTarget);
-//     const ratingValue = formData.get("rating");
-//     const commentValue = formData.get("comment");
-
-//     const payload = {
-//       order_id: order.id,
-//       product_id: item.product_id,
-//       comment: String(commentValue ?? "").trim(),
-//       rating: Number(ratingValue ?? defaultRating) || defaultRating,
-//     };
-
-//     try {
-//       const res = await http.post("/api/reviews", payload);
-//       console.log(res.data);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
 
 interface OrderPageData {
   order: Order;

@@ -1,5 +1,6 @@
 package dev.sojunx.ecommerce.config;
 
+import dev.sojunx.ecommerce.utils.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -16,7 +17,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,15 +25,18 @@ import java.util.Optional;
 @Slf4j
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService service;
+    private final CookieUtil cookieUtil;
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     record EndpointMatcher(String pattern, HttpMethod method) { }
 
     private final List<EndpointMatcher> whitelist = List.of(
-            new EndpointMatcher("/api/users/login", HttpMethod.POST),
-            new EndpointMatcher("/api/users/register", HttpMethod.POST),
-            new EndpointMatcher("/api/products", HttpMethod.GET)
+            new EndpointMatcher("/api/auth", HttpMethod.POST),
+            new EndpointMatcher("/api/products", HttpMethod.GET),
+            new EndpointMatcher("/v3/api-docs", HttpMethod.GET),
+            new EndpointMatcher("/swagger-ui", HttpMethod.GET),
+            new EndpointMatcher("/swagger-ui.html", HttpMethod.GET)
     );
 
     @Override
@@ -50,7 +53,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        final Optional<Cookie> cookie = extractCookie(req, "session_id");
+        final Optional<Cookie> cookie = cookieUtil.extractCookie(req, "session_id");
         if (cookie.isEmpty()) {
             chain.doFilter(req, res);
             return;
@@ -66,18 +69,10 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
             SecurityContextHolder.getContext().setAuthentication(token);
 
-            log.info("Authenticating user with session id: {}", cookie.get().getValue());
         } catch (Exception e) {
             log.error("Error while authenticating user", e);
         }
 
         chain.doFilter(req, res);
-    }
-
-    private Optional<Cookie> extractCookie(HttpServletRequest request, String name) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return Optional.empty();
-
-        return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(name)).findFirst();
     }
 }

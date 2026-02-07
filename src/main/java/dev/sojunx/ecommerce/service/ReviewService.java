@@ -2,7 +2,6 @@ package dev.sojunx.ecommerce.service;
 
 import dev.sojunx.ecommerce.domain.entity.Review;
 import dev.sojunx.ecommerce.domain.entity.User;
-import dev.sojunx.ecommerce.dto.request.DeleteReviewRequest;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.dto.response.ReviewStats;
@@ -10,6 +9,8 @@ import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,11 @@ public class ReviewService {
     private final ReviewMapper mapper;
 
     @Transactional(readOnly = true)
-    public List<Review> getReviews(UUID id) {
-        return repository.findAllByProductId(id);
+    public Page<Review> findAll(UUID id, Integer rating, Pageable pageable) {
+        if (rating != null)
+            return repository.findAllByProductIdAndRating(id, rating, pageable);
+
+        return repository.findAllByProductId(id, pageable);
     }
 
     @Transactional
@@ -68,16 +72,21 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review updateReview(UUID id, UpdateReviewRequest request) {
+    public Review updateReview(UUID id, UpdateReviewRequest request, UUID userId) {
+        IO.println(userId);
+        IO.println(request);
         var result = repository.findById(id);
         if (result.isEmpty())
             throw new NotFoundException("Review not found");
 
         var review = result.get();
-        // TODO: validate user
+        IO.println(review);
+        if (!review.getUserId().equals(userId))
+            throw new RuntimeException("User not authorized to update review");
 
         if (request.getRating() != null)
             review.setRating(request.getRating());
+
         if (request.getComment() != null)
             review.setComment(request.getComment());
 
@@ -85,10 +94,19 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(UUID id, DeleteReviewRequest request) {
-        if (request.getUserId() != null)
-            repository.deleteByIdAndUserId(id, request.getUserId());
-        else
-            repository.deleteByIdAndEmail(id, request.getEmail());
+    public void deleteReview(UUID id, UUID userId) {
+        var result = repository.findById(id);
+        if (result.isEmpty())
+            throw new NotFoundException("Review not found");
+
+        var review = result.get();
+        if (!review.getUserId().equals(userId))
+            throw new RuntimeException("User not authorized to delete review");
+
+        repository.deleteById(id);
+    }
+
+    public List<Review> findAllByUserId(UUID id) {
+        return repository.findAllByUserId(id);
     }
 }

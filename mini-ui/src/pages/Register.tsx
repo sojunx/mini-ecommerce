@@ -1,59 +1,29 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import RegisterForm from "@/components/auth/RegisterForm";
 import { useAuth } from "@/hooks/useAuth";
-import { Label } from "@radix-ui/react-label";
-import { useEffect, type FormEvent } from "react";
+import { useEffect } from "react";
+import { Link } from "react-router";
 
 const RegisterPage = () => {
-  const { user, register } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (user) window.location.href = "/";
   }, [user]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const name = formData.get("name") as string;
-
-    await register({ email, name });
-  };
-
   return (
-    <div className="flex items-center justify-center">
-      <form
-        className="w-full max-w-md space-y-6 border bg-white p-10 rounded-xl shadow-sm"
-        onSubmit={handleSubmit}
-      >
-        <div>
-          <Label htmlFor="email">Name</Label>
-          <Input
-            id="name"
-            name="name"
-            type="name"
-            required
-            placeholder="Your Name"
-            className="bg-white"
-          />
-        </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            className="bg-white"
-          />
-        </div>
+    <div className="outline rounded-lg p-6 space-y-8 max-w-sm w-full">
+      <h1 className="font-serif text-2xl text-center">REGISTER</h1>
+      <RegisterForm />
 
-        <Button className="w-full cursor-pointer" size="lg">
-          Register
-        </Button>
-      </form>
+      <span className="w-full flex justify-center text-sm text-gray-600">
+        Already have an account?
+        <Link
+          to="/login"
+          className="ml-1 font-medium hover:opacity-85 duration-75 underline underline-offset-4"
+        >
+          Login
+        </Link>
+      </span>
     </div>
   );
 };

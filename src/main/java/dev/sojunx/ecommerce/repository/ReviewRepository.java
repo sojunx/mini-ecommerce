@@ -2,6 +2,8 @@ package dev.sojunx.ecommerce.repository;
 
 import dev.sojunx.ecommerce.domain.entity.RatingCount;
 import dev.sojunx.ecommerce.domain.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,9 @@ import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
-    List<Review> findAllByProductId(UUID productId);
+    Page<Review> findAllByProductId(UUID productId, Pageable pageable);
+
+    Page<Review> findAllByProductIdAndRating(UUID productId, Integer rating, Pageable pageable);
 
     Integer countReviewsByProductId(UUID productId);
 
@@ -27,4 +31,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     void deleteByIdAndEmail(UUID id, String email);
 
     boolean existsByUserIdAndProductId(UUID userId, UUID productId);
+
+    List<Review> findAllByUserId(UUID userId);
 }

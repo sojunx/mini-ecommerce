@@ -1,24 +1,25 @@
 import { AuthContext } from "@/hooks/useAuth";
-import http from "@/lib/http";
+import AuthService from "@/services/auth.service";
 import type { LoginRequest, RegisterRequest } from "@/types/auth";
 import type { User } from "@/types/user";
 import { useEffect, useState, type ReactNode } from "react";
-import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await http.get<User>("/api/users/me");
+        const data = await AuthService.getCurrentUser();
 
-        setUser(res.data);
-      } catch (error) {
-        console.log(error);
+        setUser(data);
+      } catch {
+        setUser(null);
       } finally {
+        setInitialized(true);
         setLoading(false);
       }
     };
@@ -27,41 +28,31 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (request: LoginRequest) => {
+    setLoading(true);
     try {
-      const res = await http.post<User>("/api/users/login", request);
+      await AuthService.login(request);
 
-      setUser(res.data);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-      alert("Login failed. Please try again.");
+      const user = await AuthService.getCurrentUser();
+      setUser(user);
+    } catch (error: unknown) {
+      toast.error((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const logout = async () => {
-    try {
-      await http.post("/api/users/logout");
-      setUser(null);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-      alert("Logout failed. Please try again.");
-    }
-  };
+  const logout = async () =>
+    await AuthService.logout().then(() => setUser(null));
 
-  const register = async (request: RegisterRequest) => {
-    try {
-      await http.post<User>("/api/users/register", request);
-
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-      alert("Registration failed. Please try again.");
-    }
-  };
+  const register = async (request: RegisterRequest) =>
+    await AuthService.register(request)
+      .then(() => window.location.replace("/login"))
+      .catch((error: unknown) => toast.error((error as Error).message));
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, loading, initialized, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );

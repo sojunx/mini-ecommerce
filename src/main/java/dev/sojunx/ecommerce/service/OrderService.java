@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,5 +42,9 @@ public class OrderService {
             throw new NotFoundException("Order not found");
 
         return result.get();
+    }
+
+    public List<Order> findAllByUserId(UUID id) {
+        return repository.findAllByUserId(id);
     }
 }

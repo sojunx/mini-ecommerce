@@ -26,6 +26,14 @@ public class OrderController {
     private final OrderMapper mapper;
     private final OrderItemMapper itemMapper;
 
+    @GetMapping
+    ResponseEntity<ApiResponse> getAllOrders(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        var orders = service.findAllByUserId(userDetails.user().getId());
+
+        var res = ApiResponse.success("Success", orders.stream().map(mapper::toDto).toList());
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/{id}")
     ResponseEntity<ApiResponse> getOrderById(@PathVariable UUID id) {
         var order = mapper.toDto(service.getOrderById(id));

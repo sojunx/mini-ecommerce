@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class OrderItemDto {
-    private Long id;
+    private UUID id;
     private String name;
     private UUID productId;
     private Integer quantity;
