@@ -144,6 +144,6 @@
   }
 
   .card {
-    @apply outline rounded-lg shadow select-none;
+    @apply outline rounded-lg shadow select-none overflow-hidden;
   }
 }

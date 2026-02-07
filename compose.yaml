@@ -21,8 +21,8 @@ services:
     container_name: web
     ports:
       - "5173:80"
-    depends_on:
-      - api
+#    depends_on:
+#      - api
 
   api:
     build: .

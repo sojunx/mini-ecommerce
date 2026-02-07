@@ -5,9 +5,9 @@ import type { Product } from "@/types/product";
 const ProductDetails = ({ product }: { product: Product }) => {
   return (
     <div className="grid grid-cols-7 gap-16 select-none">
-      <div className="col-span-3 outline rounded">
+      <div className="col-span-3 outline rounded overflow-hidden">
         <img
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover overflow-hidden"
           draggable={false}
           src={product.image}
           alt={product.name}

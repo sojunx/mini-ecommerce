@@ -116,7 +116,7 @@ const ShopPage = () => {
                 src={product.image}
                 alt={product.name}
                 draggable={false}
-                className="aspect-square object-cover"
+                className="aspect-square object-cover overflow-hidden"
               />
               <div className="p-3 border-t">
                 <h2>{product.name}</h2>

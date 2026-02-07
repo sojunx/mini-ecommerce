@@ -5,6 +5,7 @@ import dev.sojunx.ecommerce.domain.entity.User;
 import dev.sojunx.ecommerce.dto.request.ReviewRequest;
 import dev.sojunx.ecommerce.dto.request.UpdateReviewRequest;
 import dev.sojunx.ecommerce.dto.response.ReviewStats;
+import dev.sojunx.ecommerce.exception.InvalidException;
 import dev.sojunx.ecommerce.exception.NotFoundException;
 import dev.sojunx.ecommerce.mapper.ReviewMapper;
 import dev.sojunx.ecommerce.repository.ReviewRepository;
@@ -36,8 +37,10 @@ public class ReviewService {
     @Transactional
     public Review createReview(ReviewRequest request, User user) {
         var order = orderService.getOrderById(request.getOrderId());
-        var item = itemService.getItemByOrderIdAndProductId(request.getOrderId(), request.getProductId());
+        if (!order.getUserId().equals(user.getId()))
+            throw new InvalidException("Invalid user");
 
+        var item = itemService.getItemByOrderIdAndProductId(request.getOrderId(), request.getProductId());
         if (item.isReviewed())
             throw new RuntimeException("Product already reviewed");
 

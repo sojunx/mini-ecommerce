@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(res);
     }
 
+    @ExceptionHandler(InvalidException.class)
+    ResponseEntity<ApiResponse> handleInvalidException(InvalidException ex) {
+        var res = ApiResponse.error(ex.getMessage());
+        return ResponseEntity.status(ex.getStatus()).body(res);
+    }
+
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse> handleException(Exception ex) {
         var res = ApiResponse.error("Internal server error", ex.getMessage());
